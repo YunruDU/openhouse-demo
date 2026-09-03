@@ -1,0 +1,22 @@
+# ---- OS junk ----
+.DS_Store
+Thumbs.db
+*.log
+
+# ================================================================
+#  以下檔案「網站執行時不會用到」，保留在本機、不推上 GitHub
+# ================================================================
+
+# MAP：地圖頁的資料已內嵌在 MAP/index.html，這些是建置/來源資料
+MAP/events.json
+MAP/facilities.json
+MAP/openhouse_knowledge_base.json
+MAP/openhouse_knowledge_base.md
+MAP/*.xlsx
+MAP/README.md
+
+# 已移除的年度段落 / 未使用的媒體
+assets/posters/2020.jpg
+assets/posters/2021.jpg
+assets/photos/2024/02.jpg
+assets/video/shorts.mp4
