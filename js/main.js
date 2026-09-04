@@ -156,3 +156,68 @@
   window.addEventListener("load", function () { ScrollTrigger.refresh(); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
 })();
+
+/* ------------------------------------------------------------------
+   圖片點擊放大（lightbox）— 點圖放大，圖片下方顯示標題
+------------------------------------------------------------------ */
+(function () {
+  "use strict";
+
+  var imgs = Array.prototype.slice.call(
+    document.querySelectorAll(".filmstrip figure img, .year-kv img")
+  );
+  if (!imgs.length) return;
+
+  var box = document.createElement("div");
+  box.className = "lightbox";
+  box.setAttribute("role", "dialog");
+  box.setAttribute("aria-modal", "true");
+  box.innerHTML =
+    '<button class="lightbox-close" type="button" aria-label="關閉">×</button>' +
+    '<img alt="">' +
+    '<figcaption></figcaption>';
+  document.body.appendChild(box);
+
+  var bigImg = box.querySelector("img");
+  var cap = box.querySelector("figcaption");
+  var closeBtn = box.querySelector(".lightbox-close");
+  var lastFocus = null;
+
+  function captionFor(img) {
+    var fig = img.closest("figure");
+    var fc = fig ? fig.querySelector("figcaption") : null;
+    if (fc && fc.textContent.trim()) return fc.textContent.trim();
+    return img.getAttribute("alt") || "";
+  }
+
+  function open(img) {
+    lastFocus = document.activeElement;
+    bigImg.src = img.currentSrc || img.src;
+    bigImg.alt = img.alt || "";
+    var text = captionFor(img);
+    cap.textContent = text;
+    cap.style.display = text ? "" : "none";
+    box.classList.add("open");
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    if (window.__lenis) window.__lenis.stop();
+    closeBtn.focus();
+  }
+
+  function close() {
+    box.classList.remove("open");
+    document.documentElement.style.overflow = "";
+    document.body.style.overflow = "";
+    if (window.__lenis) window.__lenis.start();
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  imgs.forEach(function (img) {
+    img.addEventListener("click", function () { open(img); });
+  });
+  closeBtn.addEventListener("click", close);
+  box.addEventListener("click", function (e) { if (e.target === box) close(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && box.classList.contains("open")) close();
+  });
+})();

@@ -201,3 +201,24 @@ a{color:var(--gold-2)}
   .mc-go{width:100%;text-align:right}
 }
 @media (prefers-reduced-motion:reduce){.scroll-cue span{animation:none}}
+
+/* ---- 圖片點擊放大 lightbox ---- */
+.filmstrip figure img,.year-kv img{cursor:zoom-in}
+.lightbox{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:20px;padding:6vh 6vw;
+  background:rgba(6,9,15,.93);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  opacity:0;visibility:hidden;transition:opacity .28s ease,visibility .28s ease}
+.lightbox.open{opacity:1;visibility:visible}
+.lightbox img{max-width:100%;max-height:78vh;width:auto;height:auto;border-radius:14px;
+  box-shadow:0 24px 80px rgba(0,0,0,.6);transform:scale(.96);transition:transform .28s ease}
+.lightbox.open img{transform:scale(1)}
+.lightbox figcaption{max-width:60ch;text-align:center;font-family:var(--serif);
+  font-weight:600;font-size:clamp(1rem,2.4vw,1.22rem);line-height:1.6;color:var(--gold-2)}
+.lightbox-close{position:absolute;top:22px;right:26px;width:44px;height:44px;padding:0;
+  border:0;border-radius:50%;cursor:pointer;font-size:24px;line-height:1;color:var(--ink);
+  background:rgba(255,255,255,.1);transition:background .2s}
+.lightbox-close:hover{background:rgba(255,255,255,.22)}
+@media (max-width:820px){
+  .lightbox img{max-height:64vh}
+  .lightbox-close{top:14px;right:16px}
+}
