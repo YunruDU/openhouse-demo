@@ -235,6 +235,49 @@
       box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
     }
 
+    /* 報名方式篩選按鈕列 */
+    .apply-filter-row {
+      display: flex;
+      gap: 6px;
+    }
+    .apply-btn {
+      flex: 1;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      color: #475569;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .apply-btn:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+    .apply-btn.active {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+    }
+    .apply-btn[data-apply="需報名"].active {
+      background: #dc2626;
+      border-color: #dc2626;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+    }
+    .apply-btn[data-apply="不需報名"].active {
+      background: #16a34a;
+      border-color: #16a34a;
+      box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+    }
+
     /* 下拉篩選選單列 */
     .dropdown-row {
       display: flex;
@@ -853,6 +896,19 @@
           <div class="theme-card-chip" data-theme="南部院區開放日" onclick="setThemeFilter('南部院區開放日', this)">🌴 11/14 南部院區 (35)</div>
         </div>
 
+        <!-- 報名方式切換列 -->
+        <div class="apply-filter-row" id="applyChips">
+          <button type="button" class="apply-btn active" data-apply="ALL" onclick="setApplyFilter('ALL', this)">
+            <i class="fa-solid fa-layer-group"></i> 全部方式
+          </button>
+          <button type="button" class="apply-btn" data-apply="需報名" onclick="setApplyFilter('需報名', this)">
+            <i class="fa-solid fa-ticket"></i> 需報名
+          </button>
+          <button type="button" class="apply-btn" data-apply="不需報名" onclick="setApplyFilter('不需報名', this)">
+            <i class="fa-solid fa-door-open"></i> 不需報名 (隨到隨玩)
+          </button>
+        </div>
+
         <!-- 活動組別與類型下拉選單 -->
         <div class="dropdown-row">
           <select id="groupSelect" class="custom-select" onchange="applyFilters()">
@@ -1012,6 +1068,15 @@
       });
     }
 
+    let currentApplyFilter = 'ALL';
+
+    function setApplyFilter(val, el) {
+      currentApplyFilter = val;
+      document.querySelectorAll('.apply-btn').forEach(b => b.classList.remove('active'));
+      if (el) el.classList.add('active');
+      applyFilters();
+    }
+
     function applyFilters() {
       const searchText = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
       const groupFilter = document.getElementById('groupSelect')?.value || 'ALL';
@@ -1037,6 +1102,15 @@
         if (groupFilter !== 'ALL' && (ev.group_name || '') !== groupFilter) return false;
         if (typeFilter !== 'ALL' && (ev.event_type || '') !== typeFilter) return false;
 
+        // 報名方式篩選
+        if (currentApplyFilter !== 'ALL') {
+          if (currentApplyFilter === '需報名') {
+            if (ev.need_apply !== '需報名') return false;
+          } else if (currentApplyFilter === '不需報名') {
+            if (ev.need_apply === '需報名') return false;
+          }
+        }
+
         if (timeStart !== 'ALL' || timeEnd !== 'ALL') {
           const sessions = ev.sessions || [];
           if (sessions.length === 0) return false;
@@ -1056,8 +1130,14 @@
         }
 
         if (searchText) {
-          const targetStr = `${ev.title} ${ev.organizer} ${ev.location} ${ev.speaker} ${ev.description} ${ev.notes} ${ev.event_id} ${ev.need_apply || ''} ${ev.event_type || ''} ${ev.target || ''} ${ev.group_name || ''} ${ev.theme || ''}`.toLowerCase();
-          if (!targetStr.includes(searchText)) return false;
+          if (searchText === '需報名') {
+            if (ev.need_apply !== '需報名') return false;
+          } else if (searchText === '不需報名') {
+            if (ev.need_apply === '需報名') return false;
+          } else {
+            const targetStr = `${ev.title} ${ev.organizer} ${ev.location} ${ev.speaker} ${ev.description} ${ev.notes} ${ev.event_id} ${ev.need_apply || ''} ${ev.event_type || ''} ${ev.target || ''} ${ev.group_name || ''} ${ev.theme || ''}`.toLowerCase();
+            if (!targetStr.includes(searchText)) return false;
+          }
         }
 
         return true;
