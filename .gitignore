@@ -14,6 +14,11 @@ MAP/openhouse_knowledge_base.json
 MAP/openhouse_knowledge_base.md
 MAP/*.xlsx
 MAP/README.md
+MAP/build_map.py
+MAP/registration_data.json
+
+# 報名分析：資料已內嵌在 報名分析/index.html
+報名分析/data.json
 
 # 已移除的年度段落 / 未使用的媒體
 assets/posters/2020.jpg
