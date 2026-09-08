@@ -999,7 +999,7 @@ def build():
           <h1>中研院 2026 Openhouse 活動地圖</h1>
         </div>
       </div>
-      <a href="../../../115.08.24 網站檢查/活動報名情形/index.html" target="_blank" class="header-reg-btn" title="查看全院即時報名人數與錄取率分析">
+      <a href="../%E5%A0%B1%E5%90%8D%E5%88%86%E6%9E%90/index.html" target="_blank" class="header-reg-btn" title="查看全院即時報名人數與錄取率分析">
         <i class="fa-solid fa-chart-pie"></i>
         <span>報名戰況看板</span>
         <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i>
@@ -1615,7 +1615,7 @@ def build():
             const compactSessionsHtml = renderCompactSessionsHtml(e, true);
 
             const regLinkHtml = `
-              <a href="../../../115.08.24 網站檢查/活動報名情形/index.html?search=${encodeURIComponent(e.title)}" target="_blank" onclick="event.stopPropagation()" class="card-link-reg" title="查看「${e.title}」各場次錄取率分析">
+              <a href="../%E5%A0%B1%E5%90%8D%E5%88%86%E6%9E%90/index.html?search=${encodeURIComponent(e.title)}" target="_blank" onclick="event.stopPropagation()" class="card-link-reg" title="查看「${e.title}」各場次錄取率分析">
                 <i class="fa-solid fa-chart-column"></i> 報名詳情 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:9.5px;"></i>
               </a>
             `;
@@ -1691,7 +1691,7 @@ def build():
           const compactSessionsHtml = renderCompactSessionsHtml(ev, false);
 
           const regLinkHtml = `
-            <a href="../../../115.08.24 網站檢查/活動報名情形/index.html?search=${encodeURIComponent(ev.title)}" target="_blank" class="card-link-reg" onclick="event.stopPropagation()" title="查看此活動各場次報名人數與錄取率">
+            <a href="../%E5%A0%B1%E5%90%8D%E5%88%86%E6%9E%90/index.html?search=${encodeURIComponent(ev.title)}" target="_blank" class="card-link-reg" onclick="event.stopPropagation()" title="查看此活動各場次報名人數與錄取率">
               <i class="fa-solid fa-chart-column"></i> 報名詳情 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:9.5px;"></i>
             </a>
           `;
