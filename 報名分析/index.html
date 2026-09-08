@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>中研院 2026 院區開放活動 — 報名與錄取率分析儀表板</title>
   
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M5TZJJGGCB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-M5TZJJGGCB');
+  </script>
+  
   <!-- Tailwind CSS & Fonts & Icons & Charts -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -96,14 +106,14 @@
             <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 font-semibold border border-brand-400/30">錄取率預估</span>
           </h1>
           <div class="text-[11px] text-slate-400 flex items-center gap-2" id="dataSourceLabel">
-            <i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>資料更新時間：<strong class="text-slate-200 font-bold">2026/09/08 15:38:15</strong> <span class="text-slate-400">(共 177 場次)</span>
+            <i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>資料更新時間：<strong class="text-slate-200 font-bold">2026/09/08 16:27:16</strong> <span class="text-slate-400">(共 177 場次)</span>
           </div>
         </div>
       </div>
 
       <!-- 右側動作區 -->
       <div class="flex items-center gap-2">
-        <a href="../MAP/index.html" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-md shadow-blue-600/30" title="開啟活動探索地圖">
+        <a href="../MAP/index.html" onclick="trackEvent('dashboard_click_map_button')" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-md shadow-blue-600/30" title="開啟活動探索地圖">
           <i class="fa-solid fa-map-location-dot"></i>
           <span>活動探索地圖</span>
         </a>
@@ -490,6 +500,17 @@
       '2026-11-14': '11/14'
     };
 
+    // GA4 自訂事件追蹤輔助函式
+    function trackEvent(action, params = {}) {
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', action, params);
+        }
+      } catch (e) {
+        console.debug('GA tracking error:', e);
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const searchQ = urlParams.get('q') || urlParams.get('search');
@@ -505,6 +526,32 @@
           }
         });
       }
+
+      // 搜尋關鍵字追蹤 (Debounce)
+      let dashSearchTimer = null;
+      const sInput = document.getElementById('searchInput');
+      if (sInput) {
+        sInput.addEventListener('input', () => {
+          clearTimeout(dashSearchTimer);
+          const q = sInput.value.trim();
+          if (q) {
+            dashSearchTimer = setTimeout(() => {
+              trackEvent('dashboard_search', { search_term: q });
+            }, 700);
+          }
+        });
+      }
+
+      // 下拉篩選器追蹤
+      ['typeFilter', 'orgFilter', 'slotFilter', 'statusFilter'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('change', () => {
+            trackEvent('dashboard_filter', { filter_id: id, filter_value: el.value });
+          });
+        }
+      });
+
       initFilterDropdowns();
       updateDateTabBadges();
       applyFilters();
@@ -555,6 +602,7 @@
     }
 
     function setDateFilter(date) {
+      trackEvent('dashboard_filter_date', { date: date });
       selectedDate = date;
       
       document.querySelectorAll('.date-tab').forEach(btn => {
@@ -769,6 +817,7 @@
     }
 
     function filterByHour(hour) {
+      trackEvent('dashboard_time_filter', { time_slot: hour });
       document.getElementById('slotFilter').value = hour;
       applyFilters();
     }
@@ -931,8 +980,9 @@
           barColor = 'bg-slate-300';
         }
 
+        const escapedAct = (item.activity || '').replace(/'/g, "\'");
         let actTitleHtml = item.url 
-          ? `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="font-bold text-slate-900 text-xs hover:text-brand-600 hover:underline inline-flex items-center gap-1.5 transition" title="點擊在官方網站開啟「${item.activity}」活動頁面">
+          ? `<a href="${item.url}" target="_blank" rel="noopener noreferrer" onclick="trackEvent('dashboard_click_official_link', { activity: '${escapedAct}' })" class="font-bold text-slate-900 text-xs hover:text-brand-600 hover:underline inline-flex items-center gap-1.5 transition" title="點擊在官方網站開啟「${item.activity}」活動頁面">
               <span>${item.activity}</span>
               <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-blue-500 shrink-0"></i>
              </a>`
@@ -945,7 +995,7 @@
               ${actTitleHtml}
               <div class="text-[11px] text-slate-500 flex items-center gap-1.5 mt-1 flex-wrap">
                 <span class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">${item.session}</span>
-                <a href="../MAP/index.html?search=${encodeURIComponent(item.activity)}" target="_blank" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10.5px] font-semibold border border-blue-200 transition" title="在地圖中查看此活動位置與詳情">
+                <a href="../MAP/index.html?search=${encodeURIComponent(item.activity)}" target="_blank" onclick="trackEvent('dashboard_click_map_location', { activity: '${escapedAct}' })" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10.5px] font-semibold border border-blue-200 transition" title="在地圖中查看此活動位置與詳情">
                   <i class="fa-solid fa-map-location-dot text-blue-600"></i>
                   <span>地圖定位</span>
                 </a>
@@ -986,6 +1036,7 @@
     }
 
     function handleFileUpload(event) {
+      trackEvent('dashboard_upload_csv');
       const file = event.target.files[0];
       if (!file) return;
 
@@ -1124,6 +1175,7 @@
     }
 
     function exportCurrentTableCSV() {
+      trackEvent('dashboard_export_csv', { row_count: currentFilteredData.length });
       if (currentFilteredData.length === 0) {
         alert('當前無可匯出的資料');
         return;
