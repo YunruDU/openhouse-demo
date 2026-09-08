@@ -1614,11 +1614,11 @@ def build():
 
             const compactSessionsHtml = renderCompactSessionsHtml(e, true);
 
-            const regLinkHtml = `
+            const regLinkHtml = (e.need_apply === '需報名') ? `
               <a href="../%E5%A0%B1%E5%90%8D%E5%88%86%E6%9E%90/index.html?search=${encodeURIComponent(e.title)}" target="_blank" onclick="event.stopPropagation()" class="card-link-reg" title="查看「${e.title}」各場次錄取率分析">
                 <i class="fa-solid fa-chart-column"></i> 報名詳情 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:9.5px;"></i>
               </a>
-            `;
+            ` : '';
 
             return `
               <div class="building-event-item" id="popup_event_${e.event_id}" onclick="focusEventCard('${e.event_id}')" style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); cursor: pointer; transition: all 0.2s ease;">
@@ -1634,7 +1634,7 @@ def build():
                 ${compactSessionsHtml}
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; padding-top: 4px; border-top: 1px solid #f1f5f9;">
                   ${regLinkHtml}
-                  <a href="${e.url}" target="_blank" onclick="event.stopPropagation()" style="color: #2563eb; font-weight: 800; font-size: 11.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                  <a href="${e.url}" target="_blank" onclick="event.stopPropagation()" style="color: #2563eb; font-weight: 800; font-size: 11.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-left: auto;">
                     官方詳情 <i class="fa-solid fa-arrow-up-right-from-square"></i>
                   </a>
                 </div>
@@ -1690,11 +1690,11 @@ def build():
 
           const compactSessionsHtml = renderCompactSessionsHtml(ev, false);
 
-          const regLinkHtml = `
+          const regLinkHtml = (ev.need_apply === '需報名') ? `
             <a href="../%E5%A0%B1%E5%90%8D%E5%88%86%E6%9E%90/index.html?search=${encodeURIComponent(ev.title)}" target="_blank" class="card-link-reg" onclick="event.stopPropagation()" title="查看此活動各場次報名人數與錄取率">
               <i class="fa-solid fa-chart-column"></i> 報名詳情 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:9.5px;"></i>
             </a>
-          `;
+          ` : '';
 
           card.innerHTML = `
             <div class="card-top">
