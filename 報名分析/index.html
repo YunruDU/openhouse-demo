@@ -89,40 +89,49 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #94a3b8;
     }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900">
 
-  <!-- 頂部導覽列 Header -->
+  <!-- 頂部導覽列 Header (RWD 響應式：手機版上下分層，按鈕均分等寬且不擠壓折字) -->
   <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800 text-white shadow-lg">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-brand-500/30">
-          <i class="fa-solid fa-chart-pie text-lg"></i>
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
+      <!-- 左側標題區 -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex-shrink-0 flex items-center justify-center text-white shadow-md shadow-brand-500/30">
+          <i class="fa-solid fa-chart-pie text-base sm:text-lg"></i>
         </div>
-        <div>
-          <h1 class="text-base sm:text-lg font-black tracking-tight flex items-center gap-2">
-            <span>2026 Openhouse 活動報名與錄取率分析儀表板</span>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 font-semibold border border-brand-400/30">錄取率預估</span>
+        <div class="min-w-0 flex-1">
+          <h1 class="text-sm sm:text-base md:text-lg font-black tracking-tight flex items-center gap-1.5 flex-wrap leading-tight">
+            <span class="truncate">Openhouse 活動報名與錄取率分析</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-brand-500/20 text-brand-300 font-semibold border border-brand-400/30 whitespace-nowrap">預估</span>
           </h1>
-          <div class="text-[11px] text-slate-400 flex items-center gap-2" id="dataSourceLabel">
-            <i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>資料更新時間：<strong class="text-slate-200 font-bold">2026/09/09 13:36:06</strong> <span class="text-slate-400">(共 177 場次)</span>
+          <div class="text-[10.5px] sm:text-[11px] text-slate-400 flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5" id="dataSourceLabel">
+            <span><i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>更新：<strong class="text-slate-200 font-bold">2026/09/09 14:32:23</strong></span>
+            <span class="text-slate-400 whitespace-nowrap">(共 177 場次)</span>
           </div>
         </div>
       </div>
 
-      <!-- 右側動作區 -->
-      <div class="flex items-center gap-2">
-        <a href="../MAP/index.html" onclick="trackEvent('dashboard_click_map_button')" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-md shadow-blue-600/30" title="開啟活動探索地圖">
+      <!-- 右側動作區 (手機版三顆按鈕並排等寬、文字不折行) -->
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 w-full sm:w-auto">
+        <a href="../MAP/index.html" onclick="trackEvent('dashboard_click_map_button')" class="flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow-md shadow-blue-600/30 whitespace-nowrap" title="開啟活動探索地圖">
           <i class="fa-solid fa-map-location-dot"></i>
-          <span>活動探索地圖</span>
+          <span>探索地圖</span>
         </a>
-        <label class="cursor-pointer px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700 flex items-center gap-1.5 shadow-sm">
+        <label class="flex-1 sm:flex-initial cursor-pointer px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700 flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap">
           <i class="fa-solid fa-file-csv text-emerald-400"></i>
-          <span>載入新 CSV</span>
+          <span>載入 CSV</span>
           <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleFileUpload(event)">
         </label>
-        <button onclick="exportCurrentTableCSV()" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-md shadow-brand-600/30">
+        <button onclick="exportCurrentTableCSV()" class="flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow-md shadow-brand-600/30 whitespace-nowrap">
           <i class="fa-solid fa-file-excel"></i>
           <span>匯出此表</span>
         </button>
@@ -131,27 +140,27 @@
   </header>
 
   <!-- 主內容區 -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
 
-    <!-- 活動日期切換 Tabs -->
-    <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
-      <div class="flex flex-wrap items-center gap-1.5" id="dateTabContainer">
-        <button onclick="setDateFilter('ALL')" id="tab-ALL" class="date-tab px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2 bg-brand-600 text-white shadow-md shadow-brand-500/20">
+    <!-- 活動日期切換 Tabs (手機版支援滑動切換，不換行堆疊) -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm">
+      <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 sm:pb-0 no-scrollbar w-full sm:w-auto" id="dateTabContainer">
+        <button onclick="setDateFilter('ALL')" id="tab-ALL" class="date-tab px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 sm:gap-2 bg-brand-600 text-white shadow-md shadow-brand-500/20 whitespace-nowrap flex-shrink-0">
           <i class="fa-solid fa-layer-group"></i>
           <span>全部 3 天活動</span>
           <span class="px-1.5 py-0.2 rounded-full text-xs bg-white/20" id="badgeCountAll">177</span>
         </button>
-        <button onclick="setDateFilter('2026-10-03')" id="tab-2026-10-03" class="date-tab px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700">
+        <button onclick="setDateFilter('2026-10-03')" id="tab-2026-10-03" class="date-tab px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 whitespace-nowrap flex-shrink-0">
           <i class="fa-solid fa-child text-amber-500"></i>
           <span>10/03 (六) 兒童科普日</span>
           <span class="px-1.5 py-0.2 rounded-full text-xs bg-slate-200 text-slate-700" id="badgeCount1003">0</span>
         </button>
-        <button onclick="setDateFilter('2026-10-17')" id="tab-2026-10-17" class="date-tab px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700">
+        <button onclick="setDateFilter('2026-10-17')" id="tab-2026-10-17" class="date-tab px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 whitespace-nowrap flex-shrink-0">
           <i class="fa-solid fa-building-columns text-blue-500"></i>
           <span>10/17 (六) 院區開放日</span>
           <span class="px-1.5 py-0.2 rounded-full text-xs bg-slate-200 text-slate-700" id="badgeCount1017">0</span>
         </button>
-        <button onclick="setDateFilter('2026-11-14')" id="tab-2026-11-14" class="date-tab px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700">
+        <button onclick="setDateFilter('2026-11-14')" id="tab-2026-11-14" class="date-tab px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 whitespace-nowrap flex-shrink-0">
           <i class="fa-solid fa-tree text-emerald-500"></i>
           <span>11/14 (六) 南部院區開放</span>
           <span class="px-1.5 py-0.2 rounded-full text-xs bg-slate-200 text-slate-700" id="badgeCount1114">0</span>
@@ -159,14 +168,14 @@
       </div>
 
       <!-- 快速統計提示 -->
-      <div class="text-xs text-slate-500 px-3 py-1 bg-slate-50 rounded-xl border border-slate-100">
+      <div class="text-[11px] sm:text-xs text-slate-500 px-2.5 sm:px-3 py-1.5 bg-slate-50 rounded-xl border border-slate-100 flex-shrink-0 w-full sm:w-auto text-center sm:text-left">
         <i class="fa-solid fa-circle-info text-blue-500 mr-1"></i>
         <span>錄取率計算公式：<strong>(名額上限 ÷ 報名人數) × 100%</strong></span>
       </div>
     </div>
 
     <!-- 關鍵指標卡片 KPI Cards (4欄) -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
       
       <!-- 總名額與總報名 -->
       <div class="glass-card rounded-2xl p-4 flex flex-col justify-between">
@@ -364,29 +373,29 @@
         </div>
       </div>
 
-      <!-- 篩選列 -->
-      <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200/80 flex flex-wrap gap-2.5 items-center text-xs">
+      <!-- 篩選列 (手機版整齊雙欄網格排列，電腦版維持水平流動) -->
+      <div class="bg-slate-50/80 p-2.5 sm:p-3 rounded-xl border border-slate-200/80 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-2.5 items-center text-xs">
         
         <!-- 活動類型篩選 -->
-        <div class="flex items-center gap-1.5">
-          <label class="font-bold text-slate-600">類型:</label>
-          <select id="typeFilter" onchange="applyFilters()" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-500">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-1.5">
+          <label class="font-bold text-slate-600 text-[11px] sm:text-xs">類型:</label>
+          <select id="typeFilter" onchange="applyFilters()" class="w-full sm:w-auto bg-white border border-slate-300 rounded-lg px-2 sm:px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-500 text-xs">
             <option value="ALL">全部類型</option>
           </select>
         </div>
 
         <!-- 主辦單位篩選 -->
-        <div class="flex items-center gap-1.5">
-          <label class="font-bold text-slate-600">主辦單位:</label>
-          <select id="orgFilter" onchange="applyFilters()" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-500">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-1.5">
+          <label class="font-bold text-slate-600 text-[11px] sm:text-xs">主辦單位:</label>
+          <select id="orgFilter" onchange="applyFilters()" class="w-full sm:w-auto bg-white border border-slate-300 rounded-lg px-2 sm:px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-500 text-xs">
             <option value="ALL">全部單位</option>
           </select>
         </div>
 
         <!-- 時段篩選 -->
-        <div class="flex items-center gap-1.5">
-          <label class="font-bold text-slate-600">時段:</label>
-          <select id="slotFilter" onchange="applyFilters()" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-500">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-1.5">
+          <label class="font-bold text-slate-600 text-[11px] sm:text-xs">時段:</label>
+          <select id="slotFilter" onchange="applyFilters()" class="w-full sm:w-auto bg-white border border-slate-300 rounded-lg px-2 sm:px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-500 text-xs">
             <option value="ALL">全部時段</option>
             <option value="MORNING">上午場次 (12:00 前)</option>
             <option value="AFTERNOON">下午場次 (12:00 後)</option>
@@ -401,18 +410,18 @@
         </div>
 
         <!-- 競爭狀況篩選 -->
-        <div class="flex items-center gap-1.5">
-          <label class="font-bold text-slate-600">競爭狀態:</label>
-          <select id="statusFilter" onchange="applyFilters()" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-500">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-1.5">
+          <label class="font-bold text-slate-600 text-[11px] sm:text-xs">競爭狀態:</label>
+          <select id="statusFilter" onchange="applyFilters()" class="w-full sm:w-auto bg-white border border-slate-300 rounded-lg px-2 sm:px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-500 text-xs">
             <option value="ALL">全部狀態</option>
-            <option value="overbooked">🔥 超額秒殺 (需抽籤, 錄取率 &lt; 100%)</option>
-            <option value="available">🟢 名額充裕 (全額錄取, 錄取率 = 100%)</option>
+            <option value="overbooked">🔥 超額秒殺</option>
+            <option value="available">🟢 名額充裕</option>
             <option value="no_reg">⚪ 尚無人報名</option>
           </select>
         </div>
 
         <!-- 重設篩選按鈕 -->
-        <button onclick="resetFilters()" class="ml-auto bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+        <button onclick="resetFilters()" class="col-span-2 sm:ml-auto w-full sm:w-auto justify-center bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 text-xs">
           <i class="fa-solid fa-filter-circle-xmark"></i>
           <span>重設所有條件</span>
         </button>
@@ -564,7 +573,7 @@
             const timeLabel = savedTime || '本地暫存';
             const labelEl = document.getElementById('dataSourceLabel');
             if (labelEl) {
-              labelEl.innerHTML = `<i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>資料來源：<strong class="text-amber-300 font-bold">[本機暫存] ${savedFilename}</strong> <span class="text-slate-300 font-medium">(${timeLabel}，共 ${allData.length} 場次)</span> <button onclick="resetToOfficialData()" class="ml-2 px-2 py-0.5 rounded text-xs bg-rose-600 hover:bg-rose-500 text-white font-normal transition shadow-sm" title="清除本機快取並還原官方預設資料"><i class="fa-solid fa-rotate-left mr-1"></i>還原官方預設</button>`;
+              labelEl.innerHTML = `<span><i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>來源：<strong class="text-amber-300 font-bold">[暫存] ${savedFilename}</strong></span> <span class="text-slate-300 font-medium">(${timeLabel}，共 ${allData.length} 場)</span> <button onclick="resetToOfficialData()" class="ml-auto sm:ml-2 px-2 py-0.5 rounded text-[10.5px] bg-rose-600 hover:bg-rose-500 text-white font-normal transition shadow-sm whitespace-nowrap" title="清除本機快取並還原官方預設資料"><i class="fa-solid fa-rotate-left mr-1"></i>還原預設</button>`;
             }
           }
         }
@@ -626,12 +635,12 @@
       selectedDate = date;
       
       document.querySelectorAll('.date-tab').forEach(btn => {
-        btn.className = 'date-tab px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700';
+        btn.className = 'date-tab px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 whitespace-nowrap flex-shrink-0';
       });
 
       const activeBtn = document.getElementById('tab-' + date);
       if (activeBtn) {
-        activeBtn.className = 'date-tab px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2 bg-brand-600 text-white shadow-md shadow-brand-500/20';
+        activeBtn.className = 'date-tab px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 sm:gap-2 bg-brand-600 text-white shadow-md shadow-brand-500/20 whitespace-nowrap flex-shrink-0';
       }
 
       applyFilters();
@@ -661,7 +670,13 @@
           }
         }
 
-        if (statusFilter !== 'ALL' && item.status !== statusFilter) return false;
+        if (statusFilter !== 'ALL') {
+          if (statusFilter === 'available') {
+            if (item.status !== 'available' && item.status !== 'no_reg') return false;
+          } else if (item.status !== statusFilter) {
+            return false;
+          }
+        }
 
         if (searchKeyword) {
           const matchStr = (item.activity + ' ' + item.session + ' ' + item.organizer + ' ' + item.location + ' ' + item.type + ' ' + item.time_range).toLowerCase();
@@ -719,7 +734,7 @@
       const actSet = new Set(currentFilteredData.map(d => d.activity));
       
       const overbooked = currentFilteredData.filter(d => d.status === 'overbooked').length;
-      const available = currentFilteredData.filter(d => d.status === 'available').length;
+      const available = currentFilteredData.filter(d => d.status === 'available' || d.status === 'no_reg').length;
       
       let avgRate = 100.0;
       if (totalWait > 0 && totalQuota > 0) {
@@ -819,16 +834,16 @@
         let rateBadge = isHot ? 'text-rose-600 font-black' : 'text-emerald-600 font-bold';
 
         return `
-          <div onclick="filterByHour('${h}')" class="cursor-pointer p-3 rounded-xl border ${cardBg} hover:shadow-md transition flex flex-col justify-between text-center group">
-            <div class="flex items-center justify-between text-[11px] font-bold mb-1">
+          <div onclick="filterByHour('${h}')" class="cursor-pointer p-2 sm:p-3 rounded-xl border ${cardBg} hover:shadow-md transition flex flex-col justify-between text-center group">
+            <div class="flex items-center justify-between text-[10.5px] sm:text-[11px] font-bold mb-1">
               <span class="text-slate-700"><i class="fa-regular fa-clock mr-1"></i>${h}</span>
-              <span class="text-[10px] px-1.5 py-0.2 rounded bg-white/80 border border-slate-200 font-normal">${info.count}場</span>
+              <span class="text-[9.5px] sm:text-[10px] px-1.5 py-0.2 rounded bg-white/80 border border-slate-200 font-normal">${info.count}場</span>
             </div>
             <div class="my-1">
-              <div class="text-sm ${rateBadge}">${rate}%</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">時段錄取率</div>
+              <div class="text-xs sm:text-sm ${rateBadge}">${rate}%</div>
+              <div class="text-[9.5px] sm:text-[10px] text-slate-500 mt-0.5">時段錄取率</div>
             </div>
-            <div class="text-[10px] text-slate-400 pt-1 border-t border-slate-200/60">
+            <div class="text-[9.5px] sm:text-[10px] text-slate-400 pt-1 border-t border-slate-200/60 truncate">
               名額:${info.quota} | 報名:${info.wait}
             </div>
           </div>
@@ -1242,7 +1257,7 @@
           console.warn('儲存自訂 CSV 至本機失敗:', e);
         }
 
-        document.getElementById('dataSourceLabel').innerHTML = `<i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>資料來源：<strong class="text-amber-300 font-bold">[本機暫存] ${filename}</strong> <span class="text-slate-300 font-medium">(${timeFormatted}，共 ${allData.length} 場次)</span> <button onclick="resetToOfficialData()" class="ml-2 px-2 py-0.5 rounded text-xs bg-rose-600 hover:bg-rose-500 text-white font-normal transition shadow-sm" title="清除本機快取並還原官方資料"><i class="fa-solid fa-rotate-left mr-1"></i>還原官方預設</button>`;
+        document.getElementById('dataSourceLabel').innerHTML = `<span><i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>來源：<strong class="text-amber-300 font-bold">[暫存] ${filename}</strong></span> <span class="text-slate-300 font-medium">(${timeFormatted}，共 ${allData.length} 場)</span> <button onclick="resetToOfficialData()" class="ml-auto sm:ml-2 px-2 py-0.5 rounded text-[10.5px] bg-rose-600 hover:bg-rose-500 text-white font-normal transition shadow-sm whitespace-nowrap" title="清除本機快取並還原官方資料"><i class="fa-solid fa-rotate-left mr-1"></i>還原預設</button>`;
         initFilterDropdowns();
         updateDateTabBadges();
         applyFilters();
