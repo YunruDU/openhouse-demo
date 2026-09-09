@@ -106,7 +106,7 @@
             <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 font-semibold border border-brand-400/30">錄取率預估</span>
           </h1>
           <div class="text-[11px] text-slate-400 flex items-center gap-2" id="dataSourceLabel">
-            <i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>資料更新時間：<strong class="text-slate-200 font-bold">2026/09/09 09:33:01</strong> <span class="text-slate-400">(共 177 場次)</span>
+            <i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>資料更新時間：<strong class="text-slate-200 font-bold">2026/09/09 11:03:47</strong> <span class="text-slate-400">(共 177 場次)</span>
           </div>
         </div>
       </div>
@@ -551,6 +551,26 @@
           });
         }
       });
+
+      // 檢查是否有使用者自訂上傳的 CSV 暫存
+      try {
+        const savedCustomData = localStorage.getItem('custom_registration_data');
+        const savedFilename = localStorage.getItem('custom_registration_filename') || '自訂上傳 CSV';
+        const savedTime = localStorage.getItem('custom_registration_time');
+        if (savedCustomData) {
+          const parsed = JSON.parse(savedCustomData);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            allData = parsed;
+            const timeLabel = savedTime || '本地暫存';
+            const labelEl = document.getElementById('dataSourceLabel');
+            if (labelEl) {
+              labelEl.innerHTML = `<i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>資料來源：<strong class="text-amber-300 font-bold">[本機暫存] ${savedFilename}</strong> <span class="text-slate-300 font-medium">(${timeLabel}，共 ${allData.length} 場次)</span> <button onclick="resetToOfficialData()" class="ml-2 px-2 py-0.5 rounded text-xs bg-rose-600 hover:bg-rose-500 text-white font-normal transition shadow-sm" title="清除本機快取並還原官方預設資料"><i class="fa-solid fa-rotate-left mr-1"></i>還原官方預設</button>`;
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('載入自訂報名資料快取失敗:', e);
+      }
 
       initFilterDropdowns();
       updateDateTabBadges();
@@ -1035,6 +1055,48 @@
       }).join('');
     }
 
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let curr = '';
+      let inQuotes = false;
+      if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        const next = text[i + 1];
+        if (c === '"') {
+          if (inQuotes && next === '"') {
+            curr += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (c === ',' && !inQuotes) {
+          row.push(curr.trim());
+          curr = '';
+        } else if ((c === '\r' || c === '\n') && !inQuotes) {
+          if (c === '\r' && next === '\n') {
+            i++;
+          }
+          row.push(curr.trim());
+          if (row.some(f => f.length > 0)) {
+            rows.push(row);
+          }
+          row = [];
+          curr = '';
+        } else {
+          curr += c;
+        }
+      }
+      if (curr.length > 0 || row.length > 0) {
+        row.push(curr.trim());
+        if (row.some(f => f.length > 0)) {
+          rows.push(row);
+        }
+      }
+      return rows;
+    }
+
     function handleFileUpload(event) {
       trackEvent('dashboard_upload_csv');
       const file = event.target.files[0];
@@ -1042,43 +1104,43 @@
 
       const reader = new FileReader();
       reader.onload = function(e) {
+        const buffer = e.target.result;
+        let text = '';
         try {
-          const text = e.target.result;
+          const utf8Decoder = new TextDecoder('utf-8', { fatal: true });
+          text = utf8Decoder.decode(buffer);
+        } catch (err) {
+          try {
+            const big5Decoder = new TextDecoder('big5');
+            text = big5Decoder.decode(buffer);
+          } catch (e2) {
+            text = new TextDecoder().decode(buffer);
+          }
+        }
+        try {
           parseAndLoadCSV(text, file.name);
         } catch (err) {
           alert('解析 CSV 失敗，請確認檔案格式是否相符！' + err);
         }
       };
-      reader.readAsText(file, 'utf-8');
+      reader.readAsArrayBuffer(file);
+    }
+
+    function resetToOfficialData() {
+      localStorage.removeItem('custom_registration_data');
+      localStorage.removeItem('custom_registration_filename');
+      localStorage.removeItem('custom_registration_time');
+      window.location.reload();
     }
 
     function parseAndLoadCSV(csvText, filename) {
-      const lines = csvText.split(/\r?\n/).filter(l => l.trim().length > 0);
-      if (lines.length < 2) {
+      const rows = parseCSV(csvText);
+      if (rows.length < 2) {
         alert('CSV 內容為空或無有效資料');
         return;
       }
 
-      function parseCSVLine(line) {
-        const res = [];
-        let curr = '';
-        let inQuotes = false;
-        for (let i = 0; i < line.length; i++) {
-          const c = line[i];
-          if (c === '"') {
-            inQuotes = !inQuotes;
-          } else if (c === ',' && !inQuotes) {
-            res.push(curr.trim());
-            curr = '';
-          } else {
-            curr += c;
-          }
-        }
-        res.push(curr.trim());
-        return res;
-      }
-
-      const headers = parseCSVLine(lines[0]);
+      const headers = rows[0];
       const actIdx = headers.findIndex(h => h.includes('活動名稱'));
       const sesIdx = headers.findIndex(h => h.includes('場次名稱'));
       const timeIdx = headers.findIndex(h => h.includes('場次時間'));
@@ -1090,9 +1152,14 @@
       const acceptIdx = headers.findIndex(h => h.includes('正取人數'));
       const remainIdx = headers.findIndex(h => h.includes('剩餘可報名人數'));
 
+      if (actIdx === -1 || timeIdx === -1) {
+        alert('CSV 欄位格式不符，找不到「活動名稱」或「場次時間」欄位！');
+        return;
+      }
+
       const newData = [];
-      for (let i = 1; i < lines.length; i++) {
-        const cols = parseCSVLine(lines[i]);
+      for (let i = 1; i < rows.length; i++) {
+        const cols = rows[i];
         if (cols.length <= 1) continue;
 
         const actName = actIdx >= 0 ? cols[actIdx] : '';
@@ -1166,11 +1233,20 @@
         allData = newData;
         const now = new Date();
         const timeFormatted = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-        document.getElementById('dataSourceLabel').innerHTML = `<i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>資料更新時間：<strong class="text-slate-200 font-bold">${timeFormatted}</strong> <span class="text-slate-400">(共 ${allData.length} 場次)</span>`;
+        
+        try {
+          localStorage.setItem('custom_registration_data', JSON.stringify(newData));
+          localStorage.setItem('custom_registration_filename', filename);
+          localStorage.setItem('custom_registration_time', timeFormatted);
+        } catch (e) {
+          console.warn('儲存自訂 CSV 至本機失敗:', e);
+        }
+
+        document.getElementById('dataSourceLabel').innerHTML = `<i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>資料來源：<strong class="text-amber-300 font-bold">[本機暫存] ${filename}</strong> <span class="text-slate-300 font-medium">(${timeFormatted}，共 ${allData.length} 場次)</span> <button onclick="resetToOfficialData()" class="ml-2 px-2 py-0.5 rounded text-xs bg-rose-600 hover:bg-rose-500 text-white font-normal transition shadow-sm" title="清除本機快取並還原官方資料"><i class="fa-solid fa-rotate-left mr-1"></i>還原官方預設</button>`;
         initFilterDropdowns();
         updateDateTabBadges();
         applyFilters();
-        alert(`成功載入 ${filename}，共 ${allData.length} 筆活動場次！`);
+        alert(`🎉 成功載入「${filename}」！共 ${allData.length} 筆活動場次，數據已即時更新並暫存於此瀏覽器！`);
       }
     }
 
