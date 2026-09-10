@@ -810,11 +810,16 @@
       currentFilteredData.forEach(d => {
         const h = d.hour_slot || '未定';
         if (!hourMap[h]) {
-          hourMap[h] = { quota: 0, wait: 0, count: 0, sessions: [] };
+          hourMap[h] = { quota: 0, wait: 0, count: 0, admitted: 0, overbookedCount: 0, sessions: [] };
         }
         hourMap[h].quota += d.limit;
         hourMap[h].wait += d.wait;
         hourMap[h].count += 1;
+        // 真實有效錄取人數：單場最多錄取名額上限，不被其他場次的空額抵消
+        hourMap[h].admitted += Math.min(d.limit, d.wait);
+        if (d.wait > d.limit) {
+          hourMap[h].overbookedCount += 1;
+        }
         hourMap[h].sessions.push(d);
       });
 
@@ -826,23 +831,30 @@
 
       container.innerHTML = sortedHours.map(h => {
         const info = hourMap[h];
-        let rate = info.wait > 0 && info.quota > 0 ? (info.wait > info.quota ? (info.quota / info.wait * 100).toFixed(1) : 100) : 100;
-        let isHot = info.wait > info.quota;
+        // 真實時段錄取率：時段內各場實際錄取人數總和 / 總報名總人次
+        let rate = info.wait > 0 ? (info.admitted / info.wait * 100).toFixed(1) : 100;
+        let isHot = (parseFloat(rate) < 80) || (info.overbookedCount > 0 && info.overbookedCount >= info.count * 0.4);
         
-        let cardBg = isHot ? 'bg-rose-50/70 border-rose-200 text-rose-900' : 'bg-slate-50 border-slate-200 text-slate-800';
+        let cardBg = isHot ? 'bg-rose-50/80 border-rose-200 text-rose-900' : 'bg-slate-50 border-slate-200 text-slate-800';
         let rateBadge = isHot ? 'text-rose-600 font-black' : 'text-emerald-600 font-bold';
+        let overbookBadge = info.overbookedCount > 0 
+          ? `<span class="text-[9px] px-1 py-0.2 rounded bg-rose-100 text-rose-700 font-bold ml-1">${info.overbookedCount}場額滿</span>` 
+          : `<span class="text-[9px] px-1 py-0.2 rounded bg-emerald-100 text-emerald-700 font-bold ml-1">名額充足</span>`;
 
         return `
           <div onclick="filterByHour('${h}')" class="cursor-pointer p-2 sm:p-3 rounded-xl border ${cardBg} hover:shadow-md transition flex flex-col justify-between text-center group">
             <div class="flex items-center justify-between text-[10.5px] sm:text-[11px] font-bold mb-1">
               <span class="text-slate-700"><i class="fa-regular fa-clock mr-1"></i>${h}</span>
-              <span class="text-[9.5px] sm:text-[10px] px-1.5 py-0.2 rounded bg-white/80 border border-slate-200 font-normal">${info.count}場</span>
+              <div class="flex items-center">
+                <span class="text-[9.5px] sm:text-[10px] px-1.5 py-0.2 rounded bg-white/80 border border-slate-200 font-normal">${info.count}場</span>
+                ${overbookBadge}
+              </div>
             </div>
             <div class="my-1">
               <div class="text-xs sm:text-sm ${rateBadge}">${rate}%</div>
-              <div class="text-[9.5px] sm:text-[10px] text-slate-500 mt-0.5">時段錄取率</div>
+              <div class="text-[9.5px] sm:text-[10px] text-slate-500 mt-0.5">真實錄取率</div>
             </div>
-            <div class="text-[9.5px] sm:text-[10px] text-slate-400 pt-1 border-t border-slate-200/60 truncate">
+            <div class="text-[9.5px] sm:text-[10px] text-slate-400 pt-1 border-t border-slate-200/60 truncate" title="名額:${info.quota} | 報名:${info.wait} (實錄:${info.admitted})">
               名額:${info.quota} | 報名:${info.wait}
             </div>
           </div>
