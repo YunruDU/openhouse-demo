@@ -113,7 +113,7 @@
             <span class="truncate">Openhouse 活動報名與錄取率分析</span>
           </h1>
           <div class="text-[10.5px] sm:text-[11px] text-slate-400 flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5" id="dataSourceLabel">
-            <span><i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>更新：<strong class="text-slate-200 font-bold">2026/09/11 08:05:58</strong></span>
+            <span><i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>更新：<strong class="text-slate-200 font-bold">2026/09/11 08:28:37</strong></span>
             <span class="text-slate-400 whitespace-nowrap">(共 177 場次)</span>
           </div>
         </div>
@@ -265,7 +265,13 @@
             <i class="fa-solid fa-clock text-brand-600"></i>
             <span>各時段活動供需與平均錄取率預估</span>
           </h2>
-          <p class="text-xs text-slate-500 mt-0.5">點選時段卡片可直接篩選下方活動，了解民眾報名最熱門的黃金時段</p>
+          <p class="text-xs text-slate-500 mt-0.5">點選時段卡片可直接篩選下方活動（再次點擊同張卡片或點右側按鈕可還原）</p>
+        </div>
+        <div class="flex items-center gap-2 self-start sm:self-center shrink-0">
+          <button onclick="resetFilters()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm active:scale-95" title="清除時段與所有篩選條件，還原顯示全院所有活動">
+            <i class="fa-solid fa-filter-circle-xmark text-slate-500 group-hover:text-rose-500"></i>
+            <span>重設所有條件</span>
+          </button>
         </div>
       </div>
 
@@ -831,22 +837,27 @@
         return;
       }
 
+      const currentSlot = document.getElementById('slotFilter') ? document.getElementById('slotFilter').value : 'ALL';
+
       container.innerHTML = sortedHours.map(h => {
         const info = hourMap[h];
         // 時段平均預估錄取率：時段內各場次預估錄取率加總後之平均值
         let rate = info.count > 0 ? (info.rateSum / info.count).toFixed(1) : '100.0';
         let isHot = (parseFloat(rate) < 80) || (info.overbookedCount > 0 && info.overbookedCount >= info.count * 0.4);
         
-        let cardBg = isHot ? 'bg-rose-50/80 border-rose-200 text-rose-900' : 'bg-slate-50 border-slate-200 text-slate-800';
+        const isSelected = (currentSlot === h);
+        let cardBg = isSelected 
+          ? 'bg-blue-50 border-brand-500 ring-2 ring-brand-500 shadow-md text-brand-950 font-semibold scale-[1.02]' 
+          : (isHot ? 'bg-rose-50/80 border-rose-200 text-rose-900' : 'bg-slate-50 border-slate-200 text-slate-800');
         let rateBadge = isHot ? 'text-rose-600 font-black' : 'text-emerald-600 font-bold';
         let overbookBadge = info.overbookedCount > 0 
           ? `<span class="text-[9px] px-1 py-0.2 rounded bg-rose-100 text-rose-700 font-bold ml-1">${info.overbookedCount}場額滿</span>` 
           : `<span class="text-[9px] px-1 py-0.2 rounded bg-emerald-100 text-emerald-700 font-bold ml-1">名額充足</span>`;
 
         return `
-          <div onclick="filterByHour('${h}')" class="cursor-pointer p-2 sm:p-3 rounded-xl border ${cardBg} hover:shadow-md transition flex flex-col justify-between text-center group">
+          <div onclick="filterByHour('${h}')" class="cursor-pointer p-2 sm:p-3 rounded-xl border ${cardBg} hover:shadow-md transition flex flex-col justify-between text-center group" title="${isSelected ? '點擊解除此時段篩選' : '點擊篩選 ' + h + ' 時段活動'}">
             <div class="flex items-center justify-between text-[10.5px] sm:text-[11px] font-bold mb-1">
-              <span class="text-slate-700"><i class="fa-regular fa-clock mr-1"></i>${h}</span>
+              <span class="${isSelected ? 'text-brand-700 font-black' : 'text-slate-700'}"><i class="fa-regular fa-clock mr-1"></i>${h}</span>
               <div class="flex items-center">
                 <span class="text-[9.5px] sm:text-[10px] px-1.5 py-0.2 rounded bg-white/80 border border-slate-200 font-normal">${info.count}場</span>
                 ${overbookBadge}
@@ -854,7 +865,7 @@
             </div>
             <div class="my-1">
               <div class="text-xs sm:text-sm ${rateBadge}">${rate}%</div>
-              <div class="text-[9.5px] sm:text-[10px] text-slate-500 mt-0.5">時段平均錄取率</div>
+              <div class="text-[9.5px] sm:text-[10px] text-slate-500 mt-0.5">${isSelected ? '✓ 已選取時段' : '時段平均錄取率'}</div>
             </div>
             <div class="text-[9.5px] sm:text-[10px] text-slate-400 pt-1 border-t border-slate-200/60 truncate" title="名額:${info.quota} | 報名:${info.wait} (實錄:${info.admitted})">
               名額:${info.quota} | 報名:${info.wait}
@@ -866,7 +877,12 @@
 
     function filterByHour(hour) {
       trackEvent('dashboard_time_filter', { time_slot: hour });
-      document.getElementById('slotFilter').value = hour;
+      const slotFilterEl = document.getElementById('slotFilter');
+      if (slotFilterEl.value === hour) {
+        slotFilterEl.value = 'ALL';
+      } else {
+        slotFilterEl.value = hour;
+      }
       applyFilters();
     }
 
@@ -1285,17 +1301,26 @@
         return;
       }
 
-      const headers = ['編號', '活動名稱', '場次名稱', '活動日期', '活動時間', '活動類型', '主辦單位', '活動地點', '名額上限', '報名登記人數', '正取人數', '剩餘名額', '預估錄取率(%)', '競爭倍率', '狀態', '官方活動網址'];
+      function getEventDayTitle(dateVal) {
+        if (!dateVal) return '';
+        if (dateVal.includes('10-03') || dateVal.includes('10/03')) return '10/03 兒童科普日 (兒童日)';
+        if (dateVal.includes('10-17') || dateVal.includes('10/17')) return '10/17 院區開放日';
+        if (dateVal.includes('11-14') || dateVal.includes('11/14')) return '11/14 南院開放日';
+        return dateVal;
+      }
+
+      const headers = ['編號', '活動名稱', '場次名稱', '活動日別', '活動日期', '活動時間', '活動類型', '主辦單位', '活動地點', '名額上限', '報名登記人數', '正取人數', '剩餘名額', '預估錄取率(%)', '競爭倍率', '狀態', '官方活動網址'];
       
       const rows = currentFilteredData.map((d, i) => [
         i + 1,
-        `"${d.activity.replace(/"/g, '""')}"`,
-        `"${d.session.replace(/"/g, '""')}"`,
-        d.date,
-        `"${d.time_range}"`,
-        d.type,
-        `"${d.organizer}"`,
-        `"${d.location.replace(/"/g, '""')}"`,
+        `"${(d.activity || '').replace(/"/g, '""')}"`,
+        `"${(d.session || '').replace(/"/g, '""')}"`,
+        `"${getEventDayTitle(d.date)}"`,
+        d.date || '',
+        `"${(d.time_range || '').replace(/"/g, '""')}"`,
+        d.type || '',
+        `"${(d.organizer || '').replace(/"/g, '""')}"`,
+        `"${(d.location || '').replace(/"/g, '""')}"`,
         d.limit,
         d.wait,
         d.accept,
