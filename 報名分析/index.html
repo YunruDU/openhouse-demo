@@ -113,7 +113,7 @@
             <span class="truncate">Openhouse 活動報名與錄取率分析</span>
           </h1>
           <div class="text-[10.5px] sm:text-[11px] text-slate-400 flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5" id="dataSourceLabel">
-            <span><i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>更新：<strong class="text-slate-200 font-bold">2026/09/15 10:59:36</strong></span>
+            <span><i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>更新：<strong class="text-slate-200 font-bold">2026/09/15 11:34:59</strong></span>
             <span class="text-slate-400 whitespace-nowrap">(共 177 場次)</span>
           </div>
         </div>
@@ -231,7 +231,7 @@
             <span class="text-xs text-slate-400">超額 / 尚餘 <b id="kpiAvailableCount" class="text-emerald-600 font-bold">0</b> 場</span>
           </div>
           <div class="mt-1 flex items-center gap-1.5 text-[11px] text-emerald-600 font-semibold">
-            <i class="fa-solid fa-sparkles text-[10px]"></i>
+            <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
             <span>尚有名額共釋出：<b id="kpiTotalRemain" class="underline">0</b> 席</span>
           </div>
         </div>
@@ -309,7 +309,7 @@
               <i class="fa-solid fa-fire text-rose-500 mr-1"></i>最搶手 Top 20
             </button>
             <button onclick="switchRankTab('available')" id="rankTabAvailable" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition">
-              <i class="fa-solid fa-sparkles text-emerald-600 mr-1"></i>撿漏名額榜
+              <i class="fa-solid fa-wand-magic-sparkles text-emerald-500 mr-1"></i>撿漏名額榜
             </button>
           </div>
           <p class="text-[11px] text-slate-400" id="rankSubtitle">超額最激烈排行</p>
@@ -1205,7 +1205,7 @@
             </td>
             <td class="py-3 px-2.5 text-right font-black whitespace-nowrap">
               ${item.wait > 0 
-                ? `<span class="px-2 py-0.5 rounded-md bg-rose-100 text-rose-800 text-xs font-black border border-rose-300">${item.wait} 候</span>` 
+                ? `<span class="px-2 py-0.5 rounded-md bg-rose-100 text-rose-800 text-xs font-black border border-rose-300">${item.wait.toLocaleString()}</span>` 
                 : '<span class="text-slate-300 font-normal">0</span>'}
             </td>
             <td class="py-3 px-2 text-right font-bold text-blue-800 text-xs whitespace-nowrap">
