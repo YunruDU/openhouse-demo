@@ -113,7 +113,7 @@
             <span class="truncate">Openhouse 活動報名與錄取率分析</span>
           </h1>
           <div class="text-[10.5px] sm:text-[11px] text-slate-400 flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5" id="dataSourceLabel">
-            <span><i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>更新：<strong class="text-slate-200 font-bold">2026/10/03 13:45:31</strong></span>
+            <span><i class="fa-regular fa-clock text-emerald-400 mr-0.5"></i>更新：<strong class="text-slate-200 font-bold">2026/10/03 09:59:52</strong></span>
             <span class="text-slate-400 whitespace-nowrap">(共 177 場次)</span>
           </div>
         </div>
@@ -407,13 +407,7 @@
             <option value="ALL">全部時段</option>
             <option value="MORNING">上午場次 (12:00 前)</option>
             <option value="AFTERNOON">下午場次 (12:00 後)</option>
-            <option value="09:00">09:00 起</option>
-            <option value="10:00">10:00 起</option>
-            <option value="11:00">11:00 起</option>
-            <option value="13:00">13:00 起</option>
-            <option value="14:00">14:00 起</option>
-            <option value="15:00">15:00 起</option>
-            <option value="16:00">16:00 起</option>
+            <!-- 各整點時段選項由 initFilterDropdowns() 依實際資料產生 -->
           </select>
         </div>
 
@@ -633,6 +627,15 @@
       Array.from(orgSet).sort().forEach(o => {
         orgSelect.innerHTML += `<option value="${o}">${o}</option>`;
       });
+
+      // 時段選項依資料中實際出現的開始時段產生 (避免出現無資料或缺少的時段)
+      const slotSelect = document.getElementById('slotFilter');
+      slotSelect.querySelectorAll('option[data-hour]').forEach(o => o.remove());
+      const hourSet = new Set(allData.map(item => item.hour_slot).filter(h => h && h.includes(':')));
+      Array.from(hourSet).sort().forEach(h => {
+        const endHour = String(parseInt(h, 10)).padStart(2, '0') + ':59';
+        slotSelect.innerHTML += `<option value="${h}" data-hour="1">${h}–${endHour} 開始</option>`;
+      });
     }
 
     function safeSetText(id, val) {
@@ -650,7 +653,11 @@
     function setDateFilter(date) {
       trackEvent('dashboard_filter_date', { date: date });
       selectedDate = date;
-      
+      highlightDateTab(date);
+      applyFilters();
+    }
+
+    function highlightDateTab(date) {
       document.querySelectorAll('.date-tab').forEach(btn => {
         btn.className = 'date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 whitespace-nowrap flex-shrink-0';
       });
@@ -659,8 +666,6 @@
       if (activeBtn) {
         activeBtn.className = 'date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 sm:gap-2 bg-brand-600 text-white shadow-md shadow-brand-500/20 whitespace-nowrap flex-shrink-0';
       }
-
-      applyFilters();
     }
 
     function applyFilters() {
@@ -683,7 +688,8 @@
             const h = parseInt(item.start_time.split(':')[0] || '0');
             if (h < 12) return false;
           } else {
-            if (!item.start_time.startsWith(slotFilter.split(':')[0])) return false;
+            // 整點時段：場次開始時間落在該小時內 (例如 10:00 代表 10:00–10:59 開始)
+            if (item.hour_slot !== slotFilter) return false;
           }
         }
 
@@ -696,7 +702,12 @@
         }
 
         if (searchKeyword) {
-          const matchStr = (item.activity + ' ' + item.session + ' ' + item.organizer + ' ' + item.location + ' ' + item.type + ' ' + item.time_range).toLowerCase();
+          // 日期同時支援 2026-10-17、10/17、10/3 等寫法
+          const dayStr = dateToDayStr[item.date] || '';
+          const shortDay = dayStr ? dayStr.split('/').map(x => String(parseInt(x, 10))).join('/') : '';
+          const matchStr = [item.activity, item.session, item.organizer, item.location, item.type, item.time_range, item.date, dayStr, shortDay]
+            .filter(v => v !== undefined && v !== null && v !== '')
+            .join(' ').toLowerCase();
           if (!matchStr.includes(searchKeyword)) return false;
         }
 
@@ -776,6 +787,8 @@
       document.getElementById('orgFilter').value = 'ALL';
       document.getElementById('slotFilter').value = 'ALL';
       document.getElementById('statusFilter').value = 'ALL';
+      selectedDate = 'ALL';
+      highlightDateTab('ALL');
       applyFilters();
     }
 
@@ -991,6 +1004,11 @@
     function filterByHour(hour) {
       trackEvent('dashboard_time_filter', { time_slot: hour });
       const slotFilterEl = document.getElementById('slotFilter');
+      // 若下拉選單缺少此時段 (例如自訂 CSV 帶來新時段)，先補上選項，避免設定失敗而變成「不篩選」
+      if (!Array.from(slotFilterEl.options).some(o => o.value === hour)) {
+        const endHour = String(parseInt(hour, 10)).padStart(2, '0') + ':59';
+        slotFilterEl.insertAdjacentHTML('beforeend', `<option value="${hour}" data-hour="1">${hour}–${endHour} 開始</option>`);
+      }
       if (slotFilterEl.value === hour) {
         slotFilterEl.value = 'ALL';
       } else {

@@ -335,6 +335,125 @@
       border-color: #16a34a;
       box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
     }
+    .apply-btn .badge {
+      display: inline-block;
+      padding: 0.5px 5px;
+      border-radius: 10px;
+      font-size: 10px;
+      background: #e2e8f0;
+      color: #334155;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-left: 2px;
+    }
+    .apply-btn.active .badge {
+      background: rgba(255, 255, 255, 0.28);
+      color: #ffffff;
+    }
+
+    /* 需報名之名額子篩選 (尚有名額/未額滿 vs 已額滿) */
+    .apply-sub-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background: #f8fafc;
+      padding: 7px 9px;
+      border-radius: 8px;
+      border: 1.5px dashed #cbd5e1;
+      animation: fadeInSub 0.2s ease;
+    }
+    @keyframes fadeInSub {
+      from { opacity: 0; transform: translateY(-3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .apply-sub-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: #334155;
+    }
+    .apply-sub-header-hint {
+      font-size: 10px;
+      font-weight: 600;
+      color: #15803d;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .apply-sub-btns {
+      display: flex;
+      gap: 5px;
+    }
+    .apply-sub-btn {
+      flex: 1;
+      padding: 5px 6px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .apply-sub-btn:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+    .apply-sub-btn.active {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.2);
+    }
+    .apply-sub-btn.btn-quota-avail.active {
+      background: #15803d;
+      color: #ffffff;
+      border-color: #15803d;
+      box-shadow: 0 2px 6px rgba(21, 128, 61, 0.28);
+    }
+    .apply-sub-btn.btn-quota-full.active {
+      background: #b91c1c;
+      color: #ffffff;
+      border-color: #b91c1c;
+      box-shadow: 0 2px 6px rgba(185, 28, 28, 0.28);
+    }
+    .apply-sub-btn .badge {
+      display: inline-block;
+      padding: 0.5px 5px;
+      border-radius: 10px;
+      font-size: 9.5px;
+      background: #e2e8f0;
+      color: #334155;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    .apply-sub-btn.active .badge {
+      background: rgba(255, 255, 255, 0.28);
+      color: #ffffff;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .dot-avail {
+      background: #16a34a;
+      box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+    }
+    .dot-full {
+      background: #ef4444;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+    }
 
     /* 下拉篩選選單列 */
     .dropdown-row {
@@ -1021,6 +1140,19 @@
         transform: translateX(0);
       }
 
+      .apply-sub-btns {
+        gap: 4px;
+      }
+      .apply-sub-btn {
+        padding: 5px 3px;
+        font-size: 10px;
+        letter-spacing: -0.2px;
+      }
+      .apply-sub-btn .badge {
+        padding: 0.5px 3.5px;
+        font-size: 9px;
+      }
+
       .leaflet-bottom.leaflet-right {
         bottom: 68px !important;
         right: 12px !important;
@@ -1090,7 +1222,7 @@
           <h1>中研院 2026 Openhouse 活動地圖</h1>
           <div class="brand-update-time" id="brandUpdateTime" title="活動與設施資料最後更新時間">
             <i class="fa-regular fa-clock"></i>
-            <span>更新時間：<strong id="lastUpdatedTime">2026/10/03 10:58:04</strong></span>
+            <span>更新時間：<strong id="lastUpdatedTime">2026/10/03 09:59:52</strong></span>
           </div>
         </div>
       </div>
@@ -1149,7 +1281,7 @@
           <div>
             <span style="font-size:14px; font-weight:800; color:#0f172a; display:block; line-height:1.2;">活動篩選與清單</span>
             <span style="font-size:10px; color:#64748b; display:inline-flex; align-items:center; gap:3px; margin-top:2px;">
-              <i class="fa-regular fa-clock" style="color:#10b981; font-size:9.5px;"></i> 更新時間：<strong id="drawerUpdatedTime">2026/10/03 10:58:04</strong>
+              <i class="fa-regular fa-clock" style="color:#10b981; font-size:9.5px;"></i> 更新時間：<strong id="drawerUpdatedTime">2026/10/03 09:59:52</strong>
             </span>
           </div>
         </div>
@@ -1181,11 +1313,30 @@
             <i class="fa-solid fa-layer-group"></i> 全部方式
           </button>
           <button type="button" class="apply-btn" data-apply="需報名" onclick="setApplyFilter('需報名', this)">
-            <i class="fa-solid fa-ticket"></i> 需報名
+            <i class="fa-solid fa-ticket"></i> 需報名 <span class="badge" id="badgeNeedApply">67</span>
           </button>
           <button type="button" class="apply-btn" data-apply="不需報名" onclick="setApplyFilter('不需報名', this)">
-            <i class="fa-solid fa-door-open"></i> 不需報名 (隨到隨玩)
+            <i class="fa-solid fa-door-open"></i> 不需報名 <span class="badge" id="badgeWalkIn">205</span>
           </button>
+        </div>
+
+        <!-- 需報名之名額子篩選 (當切換到「需報名」時展開顯示) -->
+        <div class="apply-sub-row" id="applySubRow" style="display: none;">
+          <div class="apply-sub-header">
+            <span><i class="fa-solid fa-filter"></i> 名額狀態篩選 (數字為場次數)：</span>
+            <span class="apply-sub-header-hint"><i class="fa-regular fa-compass"></i> 找當天還有機會參加的活動</span>
+          </div>
+          <div class="apply-sub-btns">
+            <button type="button" class="apply-sub-btn active" data-quota="ALL" onclick="setQuotaFilter('ALL', this)" title="顯示所有需報名之場次">
+              全部需報名 <span class="badge" id="countNeedApplyAll">177</span>
+            </button>
+            <button type="button" class="apply-sub-btn btn-quota-avail" data-quota="available" onclick="setQuotaFilter('available', this)" title="只顯示仍有空位的場次 (與報名分析頁「尚有剩餘名額」一致)，當天還有機會參加！">
+              <span class="status-dot dot-avail"></span> 尚有名額／未額滿 <span class="badge" id="countNeedApplyAvail">26</span>
+            </button>
+            <button type="button" class="apply-sub-btn btn-quota-full" data-quota="overbooked" onclick="setQuotaFilter('overbooked', this)" title="只顯示已額滿或超額抽籤的場次">
+              <span class="status-dot dot-full"></span> 已額滿 <span class="badge" id="countNeedApplyFull">151</span>
+            </button>
+          </div>
         </div>
 
         <!-- 活動組別與類型下拉選單 -->
@@ -1194,8 +1345,9 @@
             <option value="ALL">全部學術組別</option>
             <option value="數理科學">數理科學組</option>
             <option value="生命科學">生命科學組</option>
-            <option value="人文及社會科學">人文社會組</option>
-            <option value="院本部">院本部/其他</option>
+            <option value="人文社會科學">人文社會組</option>
+            <option value="跨學組研究中心">跨學組研究中心</option>
+            <option value="院本部">院本部</option>
           </select>
           <select id="typeSelect" class="custom-select" onchange="trackEvent('filter_type', { type: this.value }); applyFilters()">
             <option value="ALL">全部活動類型</option>
@@ -1204,35 +1356,33 @@
             <option value="互動體驗">互動體驗</option>
             <option value="成果展示">成果展示</option>
             <option value="影片欣賞">影片欣賞</option>
+            <option value="其他活動">其他活動</option>
           </select>
         </div>
 
-        <!-- 時間區間篩選 -->
+        <!-- 時間區間篩選：顯示與「從～到」時段有重疊的場次 (選項依實際資料由 initTimeRangeOptions() 重建) -->
         <div class="dropdown-row">
-          <select id="timeStartSelect" class="custom-select" title="篩選活動時段：挑選在此時間點後仍有開放／進行中的活動" onchange="trackEvent('filter_time_start', { time: this.value }); applyFilters()">
-            <option value="ALL">🕒 開始時間 (不限)</option>
-            <option value="08:00">08:00 以後</option>
-            <option value="09:00">09:00 以後</option>
-            <option value="10:00">10:00 以後</option>
-            <option value="11:00">11:00 以後</option>
-            <option value="12:00">12:00 以後</option>
-            <option value="13:00">13:00 以後</option>
-            <option value="14:00">14:00 以後</option>
-            <option value="15:00">15:00 以後</option>
-            <option value="16:00">16:00 以後</option>
-            <option value="17:00">17:00 以後</option>
+          <select id="timeStartSelect" class="custom-select" title="時段起點：顯示在此時間仍在進行或之後才開始的場次" onchange="trackEvent('filter_time_start', { time: this.value }); applyFilters()">
+            <option value="ALL">🕒 從 (不限)</option>
+            <option value="09:00">從 09:00</option>
+            <option value="10:00">從 10:00</option>
+            <option value="11:00">從 11:00</option>
+            <option value="12:00">從 12:00</option>
+            <option value="13:00">從 13:00</option>
+            <option value="14:00">從 14:00</option>
+            <option value="15:00">從 15:00</option>
+            <option value="16:00">從 16:00</option>
           </select>
-          <select id="timeEndSelect" class="custom-select" title="篩選活動時段：挑選在此時間點前已開始進行的活動" onchange="trackEvent('filter_time_end', { time: this.value }); applyFilters()">
-            <option value="ALL">🕒 結束時間 (不限)</option>
-            <option value="10:00">10:00 以前</option>
-            <option value="11:00">11:00 以前</option>
-            <option value="12:00">12:00 以前</option>
-            <option value="13:00">13:00 以前</option>
-            <option value="14:00">14:00 以前</option>
-            <option value="15:00">15:00 以前</option>
-            <option value="16:00">16:00 以前</option>
-            <option value="17:00">17:00 以前</option>
-            <option value="18:00">18:00 以前</option>
+          <select id="timeEndSelect" class="custom-select" title="時段終點：顯示在此時間之前已經開始的場次" onchange="trackEvent('filter_time_end', { time: this.value }); applyFilters()">
+            <option value="ALL">🕒 到 (不限)</option>
+            <option value="10:00">到 10:00</option>
+            <option value="11:00">到 11:00</option>
+            <option value="12:00">到 12:00</option>
+            <option value="13:00">到 13:00</option>
+            <option value="14:00">到 14:00</option>
+            <option value="15:00">到 15:00</option>
+            <option value="16:00">到 16:00</option>
+            <option value="17:00">到 17:00</option>
           </select>
         </div>
       </div>
@@ -1426,17 +1576,17 @@
       }
 
       let totalLimit = 0;
-      let totalWait = 0;
+      let totalRegistered = 0;
       let totalRemain = 0;
       let hasOverbooked = false;
 
       activeSessions.forEach(item => {
         const lim = item.limit || 0;
-        const wt = item.wait || 0;
+        const reg = getRegisteredCount(item);
         totalLimit += lim;
-        totalWait += wt;
+        totalRegistered += reg;
         totalRemain += (item.remain || 0);
-        if (lim > 0 && wt > lim) {
+        if (lim > 0 && reg > lim) {
           hasOverbooked = true;
         }
       });
@@ -1445,7 +1595,7 @@
         status: 'need_apply',
         hasStats: true,
         totalLimit: totalLimit,
-        totalWait: totalWait,
+        totalRegistered: totalRegistered,
         totalRemain: totalRemain,
         isOverbooked: hasOverbooked,
         sessions: activeSessions
@@ -1453,31 +1603,45 @@
     }
 
     // 為特定場次找出精確的報名數據
+    // sessionIndex 僅作為備援；實際以場次在 ev.sessions 中的原始位置為準 (排序/篩選後傳入的索引可能已位移)
     function getSessionRegistrationStat(ev, sessionObj, sessionIndex) {
       const regInfo = ev.regInfo;
       if (!regInfo || !regInfo.hasStats || !regInfo.sessions || regInfo.sessions.length === 0) {
         return null;
       }
 
-      const regItems = regInfo.sessions;
+      const evSessions = ev.sessions || [];
+      const origIdx = evSessions.indexOf(sessionObj);
+      const idx = origIdx >= 0 ? origIdx : sessionIndex;
+
+      if (!ev._regStatCache) ev._regStatCache = new Map();
+      if (origIdx >= 0 && ev._regStatCache.has(origIdx)) return ev._regStatCache.get(origIdx);
+
+      const stat = findSessionRegistrationStat(ev, sessionObj, idx, regInfo.sessions);
+      if (origIdx >= 0) ev._regStatCache.set(origIdx, stat);
+      return stat;
+    }
+
+    function findSessionRegistrationStat(ev, sessionObj, idx, regItems) {
+      const evSessions = ev.sessions || [];
       const sTimeKeys = extractTimeKeys(sessionObj.time || '');
+
+      // 同一活動中，與本場次條件相同的前面場次數 (A/B 場同時段時，依序對應第 1、第 2 筆報名資料)
+      const rankAmong = (isSame) => evSessions.slice(0, Math.max(0, idx)).filter(o => isSame(extractTimeKeys(o.time || ''))).length;
+      const pickByRank = (candidates, isSame) => candidates[Math.min(rankAmong(isSame), candidates.length - 1)];
 
       // 1. 優先比對日期 + 開始時間
       if (sTimeKeys.date && sTimeKeys.start) {
-        const matched = regItems.find(r => {
-          const rTimeKeys = extractTimeKeys(r.raw_time || '');
-          return rTimeKeys.date === sTimeKeys.date && rTimeKeys.start === sTimeKeys.start;
-        });
-        if (matched) return matched;
+        const isSame = k => k.date === sTimeKeys.date && k.start === sTimeKeys.start;
+        const candidates = regItems.filter(r => isSame(extractTimeKeys(r.raw_time || '')));
+        if (candidates.length > 0) return pickByRank(candidates, isSame);
       }
 
       // 2. 比對開始時間 (若日期略有不同)
       if (sTimeKeys.start) {
-        const matched = regItems.find(r => {
-          const rTimeKeys = extractTimeKeys(r.raw_time || '');
-          return rTimeKeys.start === sTimeKeys.start;
-        });
-        if (matched) return matched;
+        const isSame = k => k.start === sTimeKeys.start;
+        const candidates = regItems.filter(r => isSame(extractTimeKeys(r.raw_time || '')));
+        if (candidates.length > 0) return pickByRank(candidates, isSame);
       }
 
       // 3. 比對場次名稱
@@ -1491,8 +1655,8 @@
       }
 
       // 4. 場次數量一致時，依序號對應
-      if (regItems.length === (ev.sessions || []).length && regItems[sessionIndex]) {
-        return regItems[sessionIndex];
+      if (regItems.length === evSessions.length && regItems[idx]) {
+        return regItems[idx];
       }
 
       // 5. 單場次對應
@@ -1503,10 +1667,50 @@
       return null;
     }
 
+    // 已報名(登記)人數 = 正取 + 候補，與報名分析頁「登記」相同 (抽籤後 wait 僅為候補人數，不可單獨當作報名人數)
+    function getRegisteredCount(stat) {
+      if (!stat) return 0;
+      if (stat.registered !== undefined && stat.registered !== null && stat.registered !== '') return Number(stat.registered) || 0;
+      return (stat.accept || 0) + (stat.wait || 0);
+    }
+
+    // 場次是否仍可報名：以報名分析頁的狀態為準 (available / no_reg)，與分析頁「尚有剩餘名額」定義一致；
+    // 抽籤後超額 (overbooked) 的場次即使 remain > 0，空位也會由候補遞補，因此不算「尚有名額」
+    function isStatAvailable(stat) {
+      if (!stat) return false;
+      if (stat.status) return stat.status === 'available' || stat.status === 'no_reg';
+      return (stat.remain || 0) > 0;
+    }
+
     // 為所有活動預先計算報名狀態
     allEventsData.forEach(ev => {
       ev.regInfo = getEventRegistrationInfo(ev);
     });
+
+    // 依各場次實際對應到的報名資料，計算活動是否仍有可報名場次與可報名剩餘席位
+    allEventsData.forEach(ev => {
+      if (!ev.regInfo || !ev.regInfo.hasStats) return;
+      const availStats = (ev.sessions || [])
+        .map(s => getSessionRegistrationStat(ev, s))
+        .filter(isStatAvailable);
+      ev.regInfo.hasAvailable = availStats.length > 0;
+      ev.regInfo.availableRemain = availStats.reduce((sum, st) => sum + (st.remain || 0), 0);
+    });
+
+    // 搜尋用文字：包含活動欄位、聯絡人、舉辦日期 (10/03 與 10/3) 及各場次時間、主講人、位置
+    function buildSearchText(ev) {
+      if (ev._searchText !== undefined) return ev._searchText;
+      const days = ev.days_held || [];
+      const shortDays = days.map(d => d.split('/').map(x => String(parseInt(x, 10))).join('/'));
+      const sessionText = (ev.sessions || []).map(s => [s.time, s.speaker, s.sub_location, s.session_name].join(' ')).join(' ');
+      const parts = [
+        ev.title, ev.organizer, ev.location, ev.description, ev.notes, ev.event_id,
+        ev.need_apply, ev.event_type, ev.target, ev.group_name, ev.theme, ev.contact_person,
+        ev.days_held_display, days.join(' '), shortDays.join(' '), sessionText
+      ];
+      ev._searchText = parts.filter(v => v !== undefined && v !== null && v !== '').join(' ').toLowerCase();
+      return ev._searchText;
+    }
 
     const facilityIconConfig = {
       '接待與服務': { icon: 'fa-circle-info', color: '#ea580c' },
@@ -1547,6 +1751,7 @@
     let currentThemeFilter = 'ALL';
     let lastNankangTheme = 'ALL';
     let currentApplyFilter = 'ALL';
+    let currentQuotaFilter = 'ALL'; // 'ALL', 'available' (尚有名額/未額滿), 'overbooked' (已額滿)
 
     function createBuildingPin(count) {
       let colorClass = 'blue';
@@ -1578,7 +1783,62 @@
       currentApplyFilter = val;
       document.querySelectorAll('.apply-btn').forEach(b => b.classList.remove('active'));
       if (el) el.classList.add('active');
+
+      const subRow = document.getElementById('applySubRow');
+      if (subRow) {
+        if (val === '需報名') {
+          subRow.style.display = 'flex';
+        } else {
+          subRow.style.display = 'none';
+          currentQuotaFilter = 'ALL';
+          document.querySelectorAll('.apply-sub-btn').forEach(b => {
+            b.classList.toggle('active', b.getAttribute('data-quota') === 'ALL');
+          });
+        }
+      }
+
       applyFilters();
+    }
+
+    function setQuotaFilter(quotaVal, el) {
+      trackEvent('filter_quota_status', { quota: quotaVal });
+      currentQuotaFilter = quotaVal;
+      document.querySelectorAll('.apply-sub-btn').forEach(b => b.classList.remove('active'));
+      if (el) el.classList.add('active');
+      applyFilters();
+    }
+
+    // 是否啟用了「場次層級」的篩選 (時段，或需報名下的名額狀態)
+    function isSessionFilterActive(timeStart, timeEnd) {
+      return timeStart !== 'ALL' || timeEnd !== 'ALL' || (currentApplyFilter === '需報名' && currentQuotaFilter !== 'ALL');
+    }
+
+    // 判斷單一場次是否符合目前的時段與名額狀態篩選
+    function isSessionVisible(ev, sessionObj, timeStart, timeEnd) {
+      if (!isSessionInTimeRange(sessionObj, timeStart, timeEnd)) return false;
+      if (currentApplyFilter === '需報名' && currentQuotaFilter !== 'ALL') {
+        const stat = getSessionRegistrationStat(ev, sessionObj);
+        if (!stat) return false;
+        const avail = isStatAvailable(stat);
+        return currentQuotaFilter === 'available' ? avail : !avail;
+      }
+      return true;
+    }
+
+    // 取得活動中符合目前篩選的場次 (無場次層級篩選時回傳全部場次)
+    function getVisibleSessions(ev, timeStart, timeEnd) {
+      const sessions = ev.sessions || [];
+      if (!isSessionFilterActive(timeStart, timeEnd)) return sessions;
+      return sessions.filter(s => isSessionVisible(ev, s, timeStart, timeEnd));
+    }
+
+    // 判斷活動在指定時段內是否仍有可報名場次
+    function hasEventQuotaVacancies(ev, timeStart = 'ALL', timeEnd = 'ALL') {
+      if (ev.need_apply !== '需報名') return false;
+      if (!ev.regInfo || !ev.regInfo.hasStats) return false;
+      return (ev.sessions || []).some(s =>
+        isSessionInTimeRange(s, timeStart, timeEnd) && isStatAvailable(getSessionRegistrationStat(ev, s))
+      );
     }
 
     // 展開 / 收合過多場次
@@ -1622,14 +1882,15 @@
 
       const timeStart = document.getElementById('timeStartSelect')?.value || 'ALL';
       const timeEnd = document.getElementById('timeEndSelect')?.value || 'ALL';
-      const isTimeFiltered = (timeStart !== 'ALL' || timeEnd !== 'ALL');
+      const isTimeFiltered = isSessionFilterActive(timeStart, timeEnd);
+      const onlyTimeFilter = !(currentApplyFilter === '需報名' && currentQuotaFilter !== 'ALL');
 
-      // 若有時間篩選，將符合該時段之場次優先排在最前面顯示
+      // 若有時段或名額篩選，將符合條件之場次優先排在最前面顯示
       let orderedSessions = [...sessions];
       if (isTimeFiltered) {
         orderedSessions.sort((a, b) => {
-          const aMatch = isSessionInTimeRange(a, timeStart, timeEnd) ? 1 : 0;
-          const bMatch = isSessionInTimeRange(b, timeStart, timeEnd) ? 1 : 0;
+          const aMatch = isSessionVisible(ev, a, timeStart, timeEnd) ? 1 : 0;
+          const bMatch = isSessionVisible(ev, b, timeStart, timeEnd) ? 1 : 0;
           return bMatch - aMatch;
         });
       }
@@ -1642,14 +1903,21 @@
       function renderRow(s, idx) {
         const cleanTime = formatCleanTime(s.time);
         const matchedStat = getSessionRegistrationStat(ev, s, idx);
-        const isMatched = isTimeFiltered && isSessionInTimeRange(s, timeStart, timeEnd);
+        const isMatched = isTimeFiltered && isSessionVisible(ev, s, timeStart, timeEnd);
 
         let statHtml = '';
         if (matchedStat && matchedStat.limit > 0) {
-          const isOver = matchedStat.wait > matchedStat.limit;
+          const isAvail = isStatAvailable(matchedStat);
+          const statClass = isAvail ? 'available' : 'overbooked';
+          const statText = isAvail
+            ? `${getRegisteredCount(matchedStat)}/${matchedStat.limit}人 (餘${matchedStat.remain})`
+            : `${getRegisteredCount(matchedStat)}/${matchedStat.limit}人 額滿`;
+          const statTitle = isAvail
+            ? `本場已登記 ${getRegisteredCount(matchedStat)} 人 / 限額 ${matchedStat.limit} 人 (尚餘 ${matchedStat.remain} 席可報名)`
+            : `本場名額已額滿 (已登記 ${getRegisteredCount(matchedStat)} 人 / 限額 ${matchedStat.limit} 人)`;
           statHtml = `
-            <span class="session-stat-mini ${isOver ? 'overbooked' : 'available'}" title="本場已報名 ${matchedStat.wait} 人 / 限額 ${matchedStat.limit} 人">
-              <span class="dot"></span>${matchedStat.wait}/${matchedStat.limit}人
+            <span class="session-stat-mini ${statClass}" title="${statTitle}">
+              <span class="dot"></span>${statText}
             </span>
           `;
         }
@@ -1659,7 +1927,7 @@
           : '';
 
         const matchBadge = isMatched
-          ? `<span style="display:inline-flex; align-items:center; gap:2px; font-size:9.5px; background:#dcfce7; color:#15803d; padding:1px 5px; border-radius:4px; font-weight:700; margin-left:5px;"><i class="fa-solid fa-check" style="font-size:8.5px;"></i>符合時段</span>`
+          ? `<span style="display:inline-flex; align-items:center; gap:2px; font-size:9.5px; background:#dcfce7; color:#15803d; padding:1px 5px; border-radius:4px; font-weight:700; margin-left:5px;"><i class="fa-solid fa-check" style="font-size:8.5px;"></i>${onlyTimeFilter ? '符合時段' : '符合條件'}</span>`
           : '';
 
         const itemStyle = (isTimeFiltered && !isMatched) ? 'opacity: 0.55;' : '';
@@ -1703,8 +1971,19 @@
       const searchText = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
       const groupFilter = document.getElementById('groupSelect')?.value || 'ALL';
       const typeFilter = document.getElementById('typeSelect')?.value || 'ALL';
-      const timeStart = document.getElementById('timeStartSelect')?.value || 'ALL';
-      const timeEnd = document.getElementById('timeEndSelect')?.value || 'ALL';
+
+      // 「從」晚於「到」時自動對調，避免出現無提示的 0 筆結果
+      const startSel = document.getElementById('timeStartSelect');
+      const endSel = document.getElementById('timeEndSelect');
+      if (startSel && endSel && startSel.value !== 'ALL' && endSel.value !== 'ALL' && startSel.value > endSel.value) {
+        const s = startSel.value, e = endSel.value;
+        if ([...startSel.options].some(o => o.value === e) && [...endSel.options].some(o => o.value === s)) {
+          startSel.value = e;
+          endSel.value = s;
+        }
+      }
+      const timeStart = startSel?.value || 'ALL';
+      const timeEnd = endSel?.value || 'ALL';
 
       const cardsContainer = document.getElementById('cardsContainer');
       if (!cardsContainer) return;
@@ -1740,12 +2019,9 @@
           }
         }
 
-        if (timeStart !== 'ALL' || timeEnd !== 'ALL') {
-          const sessions = ev.sessions || [];
-          if (sessions.length === 0) return false;
-
-          const matchSession = sessions.some(s => isSessionInTimeRange(s, timeStart, timeEnd));
-          if (!matchSession) return false;
+        // 場次層級篩選 (時段、名額狀態)：活動中至少要有一個場次同時符合
+        if (isSessionFilterActive(timeStart, timeEnd)) {
+          if (getVisibleSessions(ev, timeStart, timeEnd).length === 0) return false;
         }
 
         if (searchText) {
@@ -1754,8 +2030,7 @@
           } else if (searchText === '不需報名' || searchText === '免報名') {
             if (ev.need_apply === '需報名') return false;
           } else {
-            const targetStr = `${ev.title} ${ev.organizer} ${ev.location} ${ev.speaker} ${ev.description} ${ev.notes} ${ev.event_id} ${ev.need_apply || ''} ${ev.event_type || ''} ${ev.target || ''} ${ev.group_name || ''} ${ev.theme || ''}`.toLowerCase();
-            if (!targetStr.includes(searchText)) return false;
+            if (!buildSearchText(ev).includes(searchText)) return false;
           }
         }
 
@@ -1767,12 +2042,11 @@
       const totalCountEl = document.getElementById('filterTotalCount');
       if (totalCountEl) totalCountEl.innerText = matchedEvents.length;
 
-      // 計算符合條件之總場次數 (若有設定時間篩選，統計符合該時段之場次)
+      // 計算符合條件之總場次數 (若有時段或名額篩選，只統計符合條件之場次)
       let totalSessions = 0;
       matchedEvents.forEach(ev => {
-        if (timeStart !== 'ALL' || timeEnd !== 'ALL') {
-          const valid = (ev.sessions || []).filter(s => isSessionInTimeRange(s, timeStart, timeEnd));
-          totalSessions += (valid.length > 0 ? valid.length : 1);
+        if (isSessionFilterActive(timeStart, timeEnd)) {
+          totalSessions += getVisibleSessions(ev, timeStart, timeEnd).length;
         } else {
           const sCount = (ev.sessions && ev.sessions.length > 0) ? ev.sessions.length : (ev.sessions_count || 1);
           totalSessions += sCount;
@@ -1821,8 +2095,16 @@
             let applyTagHtml = '';
             if (e.need_apply === '需報名') {
               if (regInfo.hasStats && regInfo.totalLimit > 0) {
-                const statClass = regInfo.isOverbooked ? 'overbooked' : 'available';
-                applyTagHtml = `<span class="meta-tag tag-reg-stat ${statClass}" title="全場累計已報名 ${regInfo.totalWait} 人 / 總限額 ${regInfo.totalLimit} 人"><i class="fa-solid fa-users"></i> 報名 <b>${regInfo.totalWait}</b> / 名額 <b>${regInfo.totalLimit}</b></span>`;
+                const hasRemain = !!regInfo.hasAvailable;
+                const statClass = hasRemain ? 'available' : 'overbooked';
+                const statIcon = hasRemain ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-circle-xmark"></i>';
+                const statText = hasRemain
+                  ? `尚有名額 (餘 ${regInfo.availableRemain} 席)`
+                  : `已額滿 (${regInfo.totalRegistered}/${regInfo.totalLimit}人)`;
+                const statTitle = hasRemain
+                  ? `報名狀況：尚有名額！(全場累計已報名 ${regInfo.totalRegistered} 人 / 總限額 ${regInfo.totalLimit} 人)`
+                  : `報名狀況：名額已滿 (全場累計已報名 ${regInfo.totalRegistered} 人 / 總限額 ${regInfo.totalLimit} 人)`;
+                applyTagHtml = `<span class="meta-tag tag-reg-stat ${statClass}" title="${statTitle}">${statIcon} ${statText}</span>`;
               } else {
                 applyTagHtml = `<span class="meta-tag tag-needapply"><i class="fa-solid fa-ticket"></i> 需報名</span>`;
               }
@@ -1902,8 +2184,16 @@
           let applyTagHtml = '';
           if (ev.need_apply === '需報名') {
             if (regInfo.hasStats && regInfo.totalLimit > 0) {
-              const statClass = regInfo.isOverbooked ? 'overbooked' : 'available';
-              applyTagHtml = `<span class="meta-tag tag-reg-stat ${statClass}" title="全場累計已報名 ${regInfo.totalWait} 人 / 總限額 ${regInfo.totalLimit} 人"><i class="fa-solid fa-users"></i> 報名 <b>${regInfo.totalWait}</b> / 名額 <b>${regInfo.totalLimit}</b></span>`;
+              const hasRemain = !!regInfo.hasAvailable;
+              const statClass = hasRemain ? 'available' : 'overbooked';
+              const statIcon = hasRemain ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-circle-xmark"></i>';
+              const statText = hasRemain
+                ? `尚有名額 (餘 ${regInfo.availableRemain} 席)`
+                : `已額滿 (${regInfo.totalRegistered}/${regInfo.totalLimit}人)`;
+              const statTitle = hasRemain
+                ? `報名狀況：尚有名額！(全場累計已報名 ${regInfo.totalRegistered} 人 / 總限額 ${regInfo.totalLimit} 人)`
+                : `報名狀況：名額已滿 (全場累計已報名 ${regInfo.totalRegistered} 人 / 總限額 ${regInfo.totalLimit} 人)`;
+              applyTagHtml = `<span class="meta-tag tag-reg-stat ${statClass}" title="${statTitle}">${statIcon} ${statText}</span>`;
             } else {
               applyTagHtml = `<span class="meta-tag tag-needapply"><i class="fa-solid fa-ticket"></i> 需報名</span>`;
             }
@@ -2071,6 +2361,79 @@
           }
         }
       });
+
+      // 動態更新報名方式與名額狀態徽章統計
+      updateFilterBadges();
+    }
+
+    // 動態計算並更新各篩選條件之活動場次統計徽章
+    function updateFilterBadges() {
+      const timeStart = document.getElementById('timeStartSelect')?.value || 'ALL';
+      const timeEnd = document.getElementById('timeEndSelect')?.value || 'ALL';
+      const groupFilter = document.getElementById('groupSelect')?.value || 'ALL';
+      const typeFilter = document.getElementById('typeSelect')?.value || 'ALL';
+      const searchText = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+
+      let countNeedApply = 0;
+      let countWalkIn = 0;
+      // 名額狀態子篩選以「場次」計數，與報名分析頁的場次數一致
+      let countNeedSessions = 0;
+      let countAvail = 0;
+      let countFull = 0;
+
+      allEventsData.forEach(ev => {
+        if (currentThemeFilter !== 'ALL') {
+          if (currentThemeFilter === '兒童科普日') {
+            const is1003 = (ev.days_held && ev.days_held.includes('10/03')) || (ev.days_held_display || '').includes('10/03');
+            if (ev.theme !== '兒童科普日' && !is1003) return;
+          } else if (currentThemeFilter === '院區開放日') {
+            const is1017 = (ev.days_held && ev.days_held.includes('10/17')) || (ev.days_held_display || '').includes('10/17');
+            if (ev.theme !== '院區開放日' && !is1017) return;
+          } else if (currentThemeFilter === '南部院區開放日') {
+            const is1114 = (ev.days_held && ev.days_held.includes('11/14')) || (ev.days_held_display || '').includes('11/14');
+            if (!(ev.theme || '').startsWith('南') && !is1114) return;
+          } else {
+            if (ev.theme !== currentThemeFilter) return;
+          }
+        }
+
+        if (groupFilter !== 'ALL' && (ev.group_name || '') !== groupFilter) return;
+        if (typeFilter !== 'ALL' && (ev.event_type || '') !== typeFilter) return;
+
+        if (timeStart !== 'ALL' || timeEnd !== 'ALL') {
+          const sessions = ev.sessions || [];
+          if (sessions.length === 0 || !sessions.some(s => isSessionInTimeRange(s, timeStart, timeEnd))) return;
+        }
+
+        if (searchText && searchText !== '需報名' && searchText !== '不需報名' && searchText !== '免報名') {
+          if (!buildSearchText(ev).includes(searchText)) return;
+        }
+
+        if (ev.need_apply === '需報名') {
+          countNeedApply++;
+          (ev.sessions || []).forEach(s => {
+            if (!isSessionInTimeRange(s, timeStart, timeEnd)) return;
+            countNeedSessions++;
+            const stat = getSessionRegistrationStat(ev, s);
+            if (!stat) return;
+            if (isStatAvailable(stat)) countAvail++;
+            else countFull++;
+          });
+        } else {
+          countWalkIn++;
+        }
+      });
+
+      const bNeed = document.getElementById('badgeNeedApply');
+      if (bNeed) bNeed.innerText = countNeedApply;
+      const bWalk = document.getElementById('badgeWalkIn');
+      if (bWalk) bWalk.innerText = countWalkIn;
+      const cAll = document.getElementById('countNeedApplyAll');
+      if (cAll) cAll.innerText = countNeedSessions;
+      const cAvail = document.getElementById('countNeedApplyAvail');
+      if (cAvail) cAvail.innerText = countAvail;
+      const cFull = document.getElementById('countNeedApplyFull');
+      if (cFull) cFull.innerText = countFull;
     }
 
     function toggleLayer(layerName, el) {
@@ -2231,6 +2594,9 @@
         '主辦單位',
         '主講人',
         '人數限制',
+        '已報名人數',
+        '剩餘名額',
+        '名額狀態',
         '備註說明',
         '活動簡介',
         '官方活動網址'
@@ -2241,7 +2607,7 @@
 
       const timeStart = document.getElementById('timeStartSelect')?.value || 'ALL';
       const timeEnd = document.getElementById('timeEndSelect')?.value || 'ALL';
-      const isTimeFiltered = (timeStart !== 'ALL' || timeEnd !== 'ALL');
+      const isTimeFiltered = isSessionFilterActive(timeStart, timeEnd);
 
       currentFilteredEvents.forEach(ev => {
         let sessions = (ev.sessions && ev.sessions.length > 0) ? ev.sessions : [{
@@ -2254,14 +2620,29 @@
         }];
 
         if (isTimeFiltered) {
-          const matchedSessions = sessions.filter(s => isSessionInTimeRange(s, timeStart, timeEnd));
+          const matchedSessions = sessions.filter(s => isSessionVisible(ev, s, timeStart, timeEnd));
           if (matchedSessions.length > 0) {
             sessions = matchedSessions;
           }
         }
 
-        sessions.forEach(s => {
+        sessions.forEach((s, sIdx) => {
           rowIdx++;
+          const stat = getSessionRegistrationStat(ev, s, sIdx);
+          const regLimit = stat ? stat.limit : (s.limit || '');
+          const regWait = stat ? getRegisteredCount(stat) : '';
+          const regRemain = stat ? (stat.remain !== undefined ? stat.remain : '') : '';
+          let regStatus = '';
+          if (ev.need_apply === '需報名') {
+            if (stat) {
+              regStatus = isStatAvailable(stat) ? '尚有名額' : '已額滿';
+            } else {
+              regStatus = '需報名';
+            }
+          } else {
+            regStatus = '不需報名';
+          }
+
           const row = [
             rowIdx,
             cleanCsvField(ev.event_id),
@@ -2277,7 +2658,10 @@
             cleanCsvField(ev.target),
             cleanCsvField(ev.organizer),
             cleanCsvField(s.speaker || ev.speaker),
-            cleanCsvField(s.limit),
+            cleanCsvField(regLimit),
+            cleanCsvField(regWait),
+            cleanCsvField(regRemain),
+            cleanCsvField(regStatus),
             cleanCsvField(s.note || ev.notes),
             cleanCsvField(ev.description),
             cleanCsvField(ev.url)
@@ -2289,6 +2673,9 @@
       let themeLabel = currentThemeFilter === 'ALL' ? '全部活動' : currentThemeFilter;
       if (currentApplyFilter !== 'ALL') {
         themeLabel += `_${currentApplyFilter}`;
+        if (currentApplyFilter === '需報名' && currentQuotaFilter !== 'ALL') {
+          themeLabel += currentQuotaFilter === 'available' ? '_尚有名額' : '_已額滿';
+        }
       }
       const now = new Date();
       const dateStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
@@ -2306,13 +2693,67 @@
       URL.revokeObjectURL(url);
     }
 
-    // 支援 URL 查詢參數自動搜尋與定位 (例如 MAP/index.html?search=摸古探奇)
+    // 依實際資料補齊下拉選項：資料中出現但選單沒有的組別／類型自動補上，時段選項依場次實際起訖時間產生
+    function initDataDrivenOptions() {
+      const addMissing = (selectId, values) => {
+        const sel = document.getElementById(selectId);
+        if (!sel) return;
+        const existing = new Set([...sel.options].map(o => o.value));
+        [...new Set(values)].filter(v => v && !existing.has(v)).sort().forEach(v => {
+          sel.insertAdjacentHTML('beforeend', `<option value="${v}">${v}</option>`);
+        });
+      };
+      addMissing('groupSelect', allEventsData.map(e => e.group_name));
+      addMissing('typeSelect', allEventsData.map(e => e.event_type));
+
+      let minHour = 24, maxHour = 0;
+      allEventsData.forEach(ev => (ev.sessions || []).forEach(s => {
+        const t = (s.time || '').match(/\d{1,2}:\d{2}/g);
+        if (!t || t.length < 2) return;
+        const [sh] = t[0].split(':').map(Number);
+        const [eh, em] = t[1].split(':').map(Number);
+        minHour = Math.min(minHour, sh);
+        maxHour = Math.max(maxHour, em > 0 ? eh + 1 : eh);
+      }));
+      if (minHour >= maxHour) return;
+
+      const hh = h => String(h).padStart(2, '0') + ':00';
+      const rebuild = (selectId, allLabel, prefix, from, to) => {
+        const sel = document.getElementById(selectId);
+        if (!sel) return;
+        const prev = sel.value;
+        let html = `<option value="ALL">${allLabel}</option>`;
+        for (let h = from; h <= to; h++) html += `<option value="${hh(h)}">${prefix} ${hh(h)}</option>`;
+        sel.innerHTML = html;
+        sel.value = [...sel.options].some(o => o.value === prev) ? prev : 'ALL';
+      };
+      rebuild('timeStartSelect', '🕒 從 (不限)', '從', minHour, maxHour - 1);
+      rebuild('timeEndSelect', '🕒 到 (不限)', '到', minHour + 1, maxHour);
+    }
+    initDataDrivenOptions();
+
+    // 支援 URL 查詢參數自動搜尋與定位 (例如 MAP/index.html?search=摸古探奇 或 ?apply=需報名&quota=available)
     const urlParams = new URLSearchParams(window.location.search);
     const searchQ = urlParams.get('q') || urlParams.get('search');
+    const applyQ = urlParams.get('apply');
+    const quotaQ = urlParams.get('quota');
     if (searchQ) {
       const searchInput = document.getElementById('searchInput');
       if (searchInput) {
         searchInput.value = decodeURIComponent(searchQ);
+      }
+    }
+    if (applyQ === '需報名') {
+      const applyBtn = document.querySelector('.apply-btn[data-apply="需報名"]');
+      if (applyBtn) {
+        setApplyFilter('需報名', applyBtn);
+        if (quotaQ === 'available' || quotaQ === '未額滿' || quotaQ === '尚有名額') {
+          const quotaBtn = document.querySelector('.apply-sub-btn[data-quota="available"]');
+          if (quotaBtn) setQuotaFilter('available', quotaBtn);
+        } else if (quotaQ === 'overbooked' || quotaQ === '已額滿') {
+          const quotaBtn = document.querySelector('.apply-sub-btn[data-quota="overbooked"]');
+          if (quotaBtn) setQuotaFilter('overbooked', quotaBtn);
+        }
       }
     }
 
