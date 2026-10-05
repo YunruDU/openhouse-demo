@@ -3212,18 +3212,31 @@
   // ---------- 介面 ----------
   const css = document.createElement('style');
   css.textContent = `
-    .rn-panel { position: absolute; left: 12px; bottom: 24px; z-index: 1001; width: 360px; max-height: calc(100% - 96px); display: none; flex-direction: column;
-      background: #fff; border-radius: 14px; box-shadow: 0 10px 34px rgba(15,23,42,.22); border: 1px solid #e2e8f0; overflow: hidden; font-size: 13px; color: #0f172a; }
+    .rn-panel { position: absolute; left: 12px; top: 62px; z-index: 1001; width: 360px; max-height: calc(100% - 78px); display: none; flex-direction: column;
+      background: #fff; border-radius: 14px; box-shadow: 0 10px 34px rgba(15,23,42,.22); border: 1px solid #e2e8f0; font-size: 13px; color: #0f172a; }
     .rn-panel.open { display: flex; }
-    .rn-head { display: flex; align-items: center; gap: 8px; padding: 11px 14px; background: #0f172a; color: #fff; font-weight: 800; font-size: 14px; }
+    .rn-head { display: flex; align-items: center; gap: 8px; padding: 11px 14px; border-radius: 13px 13px 0 0; background: #0f172a; color: #fff; font-weight: 800; font-size: 14px; }
     .rn-head .rn-x { margin-left: auto; background: none; border: 0; color: #cbd5e1; font-size: 17px; cursor: pointer; padding: 2px 4px; }
     .rn-form { padding: 10px 14px 8px; display: grid; grid-template-columns: 34px 1fr; gap: 6px 8px; align-items: center; border-bottom: 1px solid #f1f5f9; }
     .rn-form label { font-size: 11.5px; font-weight: 800; color: #64748b; }
-    .rn-form select { width: 100%; font-size: 13px; padding: 6px 8px; border: 1.5px solid #cbd5e1; border-radius: 8px; background: #fff; color: #0f172a; min-width: 0; }
+    .rn-field { position: relative; min-width: 0; }
+    .rn-field input { width: 100%; font-size: 13.5px; padding: 7px 9px; border: 1.5px solid #cbd5e1; border-radius: 8px; background: #fff; color: #0f172a; outline: none; }
+    .rn-field input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
+    .rn-sug { display: none; position: absolute; left: 0; right: 0; top: calc(100% + 3px); z-index: 10; background: #fff; border: 1px solid #cbd5e1; border-radius: 10px; box-shadow: 0 10px 28px rgba(15,23,42,.18); max-height: 260px; overflow-y: auto; }
+    .rn-sug.open { display: block; }
+    .rn-sug .it { display: flex; align-items: center; gap: 8px; padding: 7px 10px; cursor: pointer; font-size: 13px; line-height: 1.35; }
+    .rn-sug .it i { width: 16px; text-align: center; color: #64748b; flex-shrink: 0; }
+    .rn-sug .it span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rn-sug .it small { margin-left: auto; padding-left: 6px; color: #94a3b8; font-size: 11px; white-space: nowrap; flex-shrink: 0; max-width: 45%; overflow: hidden; text-overflow: ellipsis; }
+    .rn-sug .it.on, .rn-sug .it:hover { background: #eff6ff; }
+    .rn-sug .it.act { color: #16a34a; font-weight: 700; border-bottom: 1px solid #f1f5f9; }
+    .rn-sug .it.act i { color: #16a34a; }
+    .rn-sug .none { padding: 10px; color: #64748b; font-size: 12px; }
+    .rn-picking, .rn-picking .leaflet-interactive, .rn-picking .leaflet-marker-icon { cursor: crosshair !important; }
     .rn-tools { grid-column: 2; display: flex; gap: 6px; flex-wrap: wrap; }
     .rn-tools button { font-size: 11.5px; font-weight: 700; padding: 4px 9px; border-radius: 999px; border: 1.5px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; }
     .rn-tools button.on { border-color: #16a34a; color: #16a34a; background: #f0fdf4; }
-    .rn-body { overflow-y: auto; padding: 10px 14px 12px; -webkit-overflow-scrolling: touch; }
+    .rn-body { flex: 1; min-height: 0; overflow-y: auto; padding: 10px 14px 12px; -webkit-overflow-scrolling: touch; }
     .rn-sum { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
     .rn-sum .rn-min { font-size: 22px; font-weight: 900; color: #2563eb; }
     .rn-sum .rn-meta { color: #475569; font-weight: 600; }
@@ -3241,19 +3254,21 @@
     .rn-chip.ev:hover { background: #fde68a; }
     .rn-note { color: #64748b; font-size: 11.5px; margin-top: 8px; line-height: 1.5; }
     .rn-empty { color: #64748b; padding: 6px 0; line-height: 1.6; }
-    .rn-pick-hint { position: absolute; top: 64px; left: 50%; transform: translateX(-50%); z-index: 1002; background: #16a34a; color: #fff; font-weight: 800; padding: 8px 14px; border-radius: 999px; box-shadow: 0 6px 18px rgba(0,0,0,.2); font-size: 13px; display: none; white-space: nowrap; }
+    .rn-pick-hint { position: absolute; top: 62px; right: 12px; z-index: 1002; background: #16a34a; color: #fff; font-weight: 800; padding: 8px 14px; border-radius: 999px; box-shadow: 0 6px 18px rgba(0,0,0,.2); font-size: 13px; display: none; white-space: nowrap; }
     .rn-pin { width: 26px; height: 26px; border-radius: 50%; color: #fff; font-weight: 900; font-size: 12px; display: flex; align-items: center; justify-content: center; border: 2.5px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.35); }
     .rn-pin.s { background: #16a34a; } .rn-pin.t { background: #dc2626; }
     .rn-step-dot { width: 18px; height: 18px; border-radius: 50%; background: #fff; border: 2.5px solid #2563eb; color: #2563eb; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
     .rn-open-btn { background: #2563eb !important; color: #fff !important; border-color: #2563eb !important; }
     .popup-route-btn, .card-route-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 800; color: #fff; background: #2563eb; border: 0; border-radius: 6px; padding: 3px 8px; cursor: pointer; margin-left: 6px; }
     .card-route-btn { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; margin-left: 0; }
-    .rn-panel.narrow { left: 0; right: 0; bottom: 0; width: auto; max-height: 52%; border-radius: 16px 16px 0 0; }
+    .rn-panel.narrow { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 52%; border-radius: 16px 16px 0 0; }
     .rn-panel.narrow .rn-form { grid-template-columns: 34px 1fr; padding: 8px 12px 6px; }
+    .rn-panel.narrow .rn-head { border-radius: 15px 15px 0 0; }
+    .rn-panel.narrow.typing { top: 56px; bottom: auto; max-height: calc(100% - 56px); }   /* 手機打字時面板移到上方，避免被鍵盤蓋住 */
     @media (max-width: 768px) {
-      .rn-panel { left: 0; right: 0; bottom: 0; width: auto; max-height: 52%; border-radius: 16px 16px 0 0; }
+      .rn-panel { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 52%; border-radius: 16px 16px 0 0; }
       .rn-panel.open ~ .mobile-filter-fab, body.rn-active .mobile-filter-fab { display: none !important; }
-      .rn-pick-hint { top: auto; bottom: 56%; }
+      .rn-pick-hint { top: auto; right: auto; bottom: 56%; left: 50%; transform: translateX(-50%); font-size: 12px; }
     }`;
   document.head.appendChild(css);
 
@@ -3263,20 +3278,20 @@
   panel.innerHTML = `
     <div class="rn-head"><i class="fa-solid fa-person-walking"></i> 步行路線<span style="font-weight:600;font-size:11px;color:#94a3b8;">南港院區</span><button class="rn-x" title="關閉路線"><i class="fa-solid fa-xmark"></i></button></div>
     <div class="rn-form">
-      <label>起點</label><select id="rnFrom"></select>
+      <label for="rnFrom">起點</label><div class="rn-field"><input id="rnFrom" type="text" autocomplete="off" placeholder="打館名或活動名，例如：化學、接待處A"><div class="rn-sug"></div></div>
       <div class="rn-tools"><button type="button" id="rnPick"><i class="fa-solid fa-hand-pointer"></i> 在地圖上點我的位置</button><button type="button" id="rnSwap"><i class="fa-solid fa-arrow-right-arrow-left"></i> 對調</button></div>
-      <label>終點</label><select id="rnTo"></select>
+      <label for="rnTo">終點</label><div class="rn-field"><input id="rnTo" type="text" autocomplete="off" placeholder="要去哪裡？打一兩個字就會出現"><div class="rn-sug"></div></div>
     </div>
     <div class="rn-body" id="rnBody"></div>`;
   host.appendChild(panel);
   const hint = document.createElement('div');
   hint.className = 'rn-pick-hint';
-  hint.innerHTML = '<i class="fa-solid fa-hand-pointer"></i> 點一下地圖上你現在的位置';
+  hint.innerHTML = '<i class="fa-solid fa-hand-pointer"></i> 點一下地圖上你現在的位置（點在建築上也可以）';
   host.appendChild(hint);
   L.DomEvent.disableClickPropagation(panel);
   L.DomEvent.disableScrollPropagation(panel);
 
-  const $from = panel.querySelector('#rnFrom'), $to = panel.querySelector('#rnTo'), $body = panel.querySelector('#rnBody');
+  const $body = panel.querySelector('#rnBody');
   let custom = null;          // 在地圖上點的位置
   let picking = false;
   const layer = L.layerGroup().addTo(map);
@@ -3284,20 +3299,104 @@
   // 上一段路線的終點只記在這次瀏覽（sessionStorage），隔天再開不會沿用
   const store = { get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { sessionStorage.setItem(k, v); } catch (e) { /* 無 */ } } };
 
-  function fillSelects(fromVal, toVal) {
-    const rc = receptions(), pl = placeList();
-    const opt = (v, t) => `<option value="${esc(v)}">${esc(t)}</option>`;
-    $from.innerHTML = (custom ? `<optgroup label="我的位置">${opt('__custom__', '📍 地圖上點選的位置')}</optgroup>` : '') +
-      `<optgroup label="接待處">${rc.map(r => opt(r.name, r.label)).join('')}</optgroup>` +
-      `<optgroup label="館舍">${pl.map(p => opt(p.name, p.name)).join('')}</optgroup>`;
-    $to.innerHTML = `<option value="">請選擇要去哪裡…</option><optgroup label="館舍">${pl.map(p => opt(p.name, p.name)).join('')}</optgroup>` +
-      `<optgroup label="接待處">${rc.map(r => opt(r.name, r.label)).join('')}</optgroup>`;
-    if (fromVal) $from.value = fromVal;
-    if (!$from.value && $from.options.length) $from.selectedIndex = custom ? 1 : 0;
-    $to.value = toVal || '';
+  // ---------- 起點／終點：打字搜尋（館名、簡稱、接待處、活動名稱）----------
+  const ALIAS = {
+    '史語所': '歷史語言研究所', '近史所': '近代史研究所', '文哲所': '中國文哲研究所', '民族所': '民族學研究所', '歐美所': '歐美研究所',
+    '經濟所': '經濟研究所', '資訊所': '資訊科學研究所', '資工所': '資訊科學研究所', '統計所': '統計科學研究所', '生化所': '生物化學研究所',
+    '分生所': '分子生物研究所', '生醫所': '生物醫學科學研究所', '植微所': '植物暨微生物學研究所', '地球所': '地球科學研究所', '細生所': '細胞與個體生物學研究所',
+    '化學所': '化學研究所', '物理所': '物理研究所', '數學所': '數學研究所', '人社中心': '人文社會科學研究中心', '基因體中心': '基因體研究中心',
+    '資創中心': '資訊科技創新研究中心', '文物館': '歷史文物陳列館', '史語所文物館': '歷史文物陳列館', '環變中心': '環境變遷研究大樓', '生技園區': '國家生技研究園區',
+    '大門': '接待處A', '正門': '接待處A'
+  };
+  const qNorm = t => norm(t).toLowerCase();
+  function isSubseq(q, t) { let i = 0; for (const c of t) if (c === q[i]) i++; return i === q.length; }
+  function labelOf(v) {
+    if (v === '__custom__') return '📍 我的位置（地圖上點選）';
+    const p = findPoint(v);
+    return p ? (p.label || disp(p.name)) : '';
   }
+  function suggestions(text, isFrom) {
+    const q = qNorm(text);
+    const rc = receptions(), pl = placeList(), day = dayKey();
+    const acts = [];
+    if (isFrom) acts.push({ act: 'pick', icon: 'fa-hand-pointer', text: '在地圖上點我的位置', sub: '' });
+    if (custom && isFrom) acts.push({ v: '__custom__', icon: 'fa-location-dot', text: '我的位置', sub: '地圖上點選' });
+    const aliasOf = name => Object.keys(ALIAS).filter(a => ALIAS[a] === name);
+    const rcItems = rc.map(r => ({ v: r.name, icon: 'fa-circle-info', text: r.label, sub: '接待處', keys: [r.name, r.label, ...aliasOf(r.name)] }));
+    const plItems = pl.map(p => ({ v: p.name, icon: 'fa-building', text: disp(p.name), sub: `${p.events.filter(e => eventOnDay(e, day)).length} 項活動`,
+      keys: [p.name, p.name.replace('研究所', '所').replace('研究中心', '中心'), ...aliasOf(p.name)] }));
+    if (!q) return acts.concat(isFrom ? rcItems.concat(plItems) : plItems.concat(rcItems));
+    const scored = [];
+    rcItems.concat(plItems).forEach(b => {
+      let best = Infinity;
+      b.keys.forEach(k => {
+        const t = qNorm(k), i = t.indexOf(q);
+        if (i >= 0) best = Math.min(best, i === 0 ? 0 : 1 + i / 100);
+        else if (q.length >= 2 && isSubseq(q, t)) best = Math.min(best, 5);   // 「化所」也能找到「化學研究所」
+      });
+      if (best < Infinity) scored.push([best, b]);
+    });
+    scored.sort((a, b) => a[0] - b[0] || a[1].text.length - b[1].text.length);
+    const out = acts.filter(i => i.act).concat(scored.map(x => x[1]));
+    // 活動名稱：打「恐龍」也能找到舉辦的館舍
+    const seenT = new Set();
+    allEventsData.forEach(ev => {
+      if (seenT.size >= 6 || !PLACES.has(ev.location) || seenT.has(ev.title) || !eventOnDay(ev, day) || !qNorm(ev.title).includes(q)) return;
+      seenT.add(ev.title);
+      out.push({ v: ev.location, icon: 'fa-ticket', text: ev.title, sub: disp(ev.location) });
+    });
+    return out;
+  }
+
+  function makeField(input, isFrom) {
+    const list = input.parentElement.querySelector('.rn-sug');
+    const f = { value: '', input };
+    let items = [], active = -1;
+    f.set = (v, silent) => { f.value = v || ''; input.value = labelOf(f.value); if (!silent) render(); };
+    function show() {
+      const typed = input.value && input.value !== labelOf(f.value);
+      items = suggestions(typed ? input.value : '', isFrom);
+      active = typed ? items.findIndex(i => !i.act) : -1;
+      list.innerHTML = items.filter(i => !i.act).length || !typed
+        ? items.map((it, i) => `<div class="it${i === active ? ' on' : ''}${it.act ? ' act' : ''}" data-i="${i}"><i class="fa-solid ${it.icon}"></i><span>${esc(it.text)}</span>${it.sub ? `<small>${esc(it.sub)}</small>` : ''}</div>`).join('')
+        : '<div class="none">找不到，換個關鍵字試試（館名的一兩個字、簡稱或活動名稱）</div>';
+      list.classList.add('open');
+      panel.classList.add('typing');
+    }
+    function hide() { list.classList.remove('open'); panel.classList.remove('typing'); }
+    function choose(i) {
+      const it = items[i]; if (!it) return;
+      hide();
+      if (it.act === 'pick') { input.value = labelOf(f.value); input.blur(); setPicking(true); return; }
+      f.set(it.v);
+      input.blur();
+    }
+    input.addEventListener('focus', () => { input.select(); show(); });
+    input.addEventListener('input', show);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (!list.classList.contains('open')) show();
+        active = Math.max(0, Math.min(items.length - 1, active + (e.key === 'ArrowDown' ? 1 : -1)));
+        list.querySelectorAll('.it').forEach((el, i) => el.classList.toggle('on', i === active));
+        const on = list.querySelector('.it.on'); if (on) on.scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter') { e.preventDefault(); choose(active >= 0 ? active : items.findIndex(i => !i.act)); }
+      else if (e.key === 'Escape') { input.value = labelOf(f.value); hide(); input.blur(); }
+    });
+    list.addEventListener('mousedown', e => { const el = e.target.closest('.it'); if (el) { e.preventDefault(); choose(+el.dataset.i); } });
+    input.addEventListener('blur', () => setTimeout(() => { hide(); input.value = labelOf(f.value); }, 150));
+    return f;
+  }
+  const $from = makeField(panel.querySelector('#rnFrom'), true), $to = makeField(panel.querySelector('#rnTo'), false);
   const pointOf = v => v === '__custom__' ? custom : findPoint(v);
 
+  const pin = (cls, txt) => L.divIcon({ className: '', html: `<div class="rn-pin ${cls}">${txt}</div>`, iconSize: [26, 26], iconAnchor: [13, 13] });
+  function startMarker(from) {
+    const mine = from === custom;
+    const m = L.marker([from.lat, from.lng], { icon: pin('s', '起'), zIndexOffset: 1000, draggable: mine, title: mine ? '可以拖曳微調你的位置' : disp(from.name) }).addTo(layer);
+    if (mine) m.on('dragend', () => setMyLocation(m.getLatLng()));
+    return m;
+  }
   function draw(r, from, to) {
     layer.clearLayers();
     const ll = r.P.map(p => toLL(p.x, p.z));
@@ -3305,8 +3404,7 @@
     L.polyline(ll.slice(1, -1), { color: '#2563eb', weight: 6, opacity: 0.95 }).addTo(layer);
     [[ll[0], ll[1]], [ll[ll.length - 2], ll[ll.length - 1]]].forEach(seg => L.polyline(seg, { color: '#2563eb', weight: 4, dashArray: '4 7', opacity: 0.9 }).addTo(layer));
     r.turns.forEach((t, i) => L.marker(toLL(t.x, t.z), { icon: L.divIcon({ className: '', html: `<div class="rn-step-dot">${i + 1}</div>`, iconSize: [18, 18], iconAnchor: [9, 9] }), interactive: false }).addTo(layer));
-    const pin = (cls, txt) => L.divIcon({ className: '', html: `<div class="rn-pin ${cls}">${txt}</div>`, iconSize: [26, 26], iconAnchor: [13, 13] });
-    L.marker([from.lat, from.lng], { icon: pin('s', '起'), zIndexOffset: 1000 }).addTo(layer);
+    startMarker(from);
     L.marker([to.lat, to.lng], { icon: pin('t', '終'), zIndexOffset: 1000 }).addTo(layer);
     // 只用面板沒蓋住的地圖區域來顯示整條路線
     const narrow = panel.classList.contains('narrow') || window.innerWidth <= 768;
@@ -3318,7 +3416,14 @@
   function render() {
     const from = pointOf($from.value), to = pointOf($to.value);
     layer.clearLayers();
-    if (!to) { $body.innerHTML = '<div class="rn-empty">選擇終點後就會畫出步行路線、時間和沿路會看到的建築。<br>起點可以選接待處、館舍，或按「在地圖上點我的位置」。</div>'; return; }
+    $body._route = null;
+    if (!to) {
+      if (from) startMarker(from);
+      $body.innerHTML = from && from === custom
+        ? '<div class="rn-empty"><b style="color:#16a34a">✓ 已標出你的位置</b>（地圖上綠色的「起」，可以拖曳微調）。<br>接著在「終點」打館名或活動名稱。</div>'
+        : '<div class="rn-empty">在「終點」打一兩個字（館名、簡稱如「史語所」，或活動名稱），就會畫出步行路線、時間和沿路會看到的建築。</div>';
+      return;
+    }
     if (!from) { $body.innerHTML = '<div class="rn-empty">請選擇起點。</div>'; return; }
     if (from === to || (from.name === to.name && from.kind === to.kind)) { $body.innerHTML = '<div class="rn-empty">起點和終點是同一個地方。</div>'; return; }
     const r = plan(from, to);
@@ -3340,38 +3445,43 @@
 
   $body.addEventListener('click', ev => {
     const chip = ev.target.closest('[data-go]');
-    if (chip) { $to.value = chip.dataset.go; render(); return; }
+    if (chip) { $to.set(chip.dataset.go); return; }
     const li = ev.target.closest('li[data-s]');
     if (li && $body._route) {
       const [x, z] = pointAt($body._route.P, +li.dataset.s);
       map.setView(toLL(x, z), Math.max(map.getZoom(), 18), { animate: true });
     }
   });
-  $from.addEventListener('change', render);
-  $to.addEventListener('change', render);
   panel.querySelector('#rnSwap').onclick = () => {
     const f = $from.value, t = $to.value;
-    if (!t || f === '__custom__') return;
-    fillSelects(t, f);
-    render();
+    if (!t) return;
+    $from.set(t, true); $to.set(f);
   };
   function setPicking(on) {
     picking = on;
     hint.style.display = on ? 'block' : 'none';
     panel.querySelector('#rnPick').classList.toggle('on', on);
-    map.getContainer().style.cursor = on ? 'crosshair' : '';
+    map.getContainer().classList.toggle('rn-picking', on);
+  }
+  function setMyLocation(ll) {
+    setPicking(false);
+    if (isSouth(ll.lat)) return;
+    custom = { name: '我的位置', lat: ll.lat, lng: ll.lng, kind: 'custom' };
+    store.set('rn-last-dest', '');
+    $from.set('__custom__');
   }
   panel.querySelector('#rnPick').onclick = () => setPicking(!picking);
-  map.on('click', e => {
-    if (!picking) return;
-    setPicking(false);
+  // 選位置時攔下地圖上的點擊（點在館舍圖釘上也算，不打開資訊框）；拖曳地圖不算點擊
+  const mc = map.getContainer();
+  let downXY = null;
+  mc.addEventListener('pointerdown', e => { downXY = picking ? [e.clientX, e.clientY] : null; }, true);
+  mc.addEventListener('click', e => {
+    if (!picking || e.target.closest('.leaflet-control')) return;
+    if (downXY && Math.hypot(e.clientX - downXY[0], e.clientY - downXY[1]) > 6) return;
+    e.stopPropagation(); e.preventDefault();
     map.closePopup();
-    if (isSouth(e.latlng.lat)) return;
-    custom = { name: '我的位置', lat: e.latlng.lat, lng: e.latlng.lng, kind: 'custom' };
-    store.set('rn-last-dest', '');
-    fillSelects('__custom__', $to.value);
-    render();
-  });
+    setMyLocation(map.mouseEventToLatLng(e));
+  }, true);
 
   function open(toName, fromName) {
     const to = toName ? findPoint(toName) : null;
@@ -3386,13 +3496,15 @@
       else if (custom) from = '__custom__';
       else { const rc = receptions(); from = rc.length ? rc[0].name : ''; }
     }
-    fillSelects(from, to ? to.name : '');
+    $from.set(from === '__custom__' || findPoint(from) ? from : '', true);
+    $to.set(to ? to.name : '', true);
     layout();
     panel.classList.add('open');
     document.body.classList.add('rn-active');
     map.closePopup();
     if (typeof closeMobileDrawer === 'function' && window.innerWidth <= 768) closeMobileDrawer();
     render();
+    if (!to && window.innerWidth > 768) setTimeout(() => $to.input.focus(), 50);   // 電腦版直接可以打字
   }
   function close() {
     panel.classList.remove('open');
