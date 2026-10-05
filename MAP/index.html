@@ -857,6 +857,35 @@
       text-decoration: underline;
     }
 
+    .card-link-copy {
+      width: 26px;
+      height: 24px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #475569;
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .card-link-copy:hover { border-color: #2563eb; color: #2563eb; }
+    .card-link-copy.copied { border-color: #16a34a; color: #16a34a; background: #f0fdf4; }
+    .popup-copy-link {
+      margin-left: 6px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .popup-copy-link:hover { border-color: #2563eb; color: #2563eb; }
+    .popup-copy-link.copied { border-color: #16a34a; color: #16a34a; background: #f0fdf4; }
     .card-link-reg {
       font-size: 11px;
       font-weight: 800;
@@ -2208,7 +2237,7 @@
           marker.bindPopup(`
             <div class="popup-box">
               <div class="popup-title">📍 ${bData.locationName}</div>
-              <div class="popup-badge" style="background:#dbeafe; color:#1e40af;">共 ${count} 場開放日活動</div>
+              <div class="popup-badge" style="background:#dbeafe; color:#1e40af;">共 ${count} 場開放日活動<button type="button" class="popup-copy-link" data-loc="${encodeURIComponent(bData.locationName)}" onclick="copyShareLink('loc', decodeURIComponent(this.dataset.loc), this)" title="複製這棟館舍的連結（可做成 QR Code 貼在門口）"><i class="fa-solid fa-link"></i> 複製此館連結</button></div>
               <div class="building-event-list">
                 ${eventItemsHtml}
               </div>
@@ -2291,6 +2320,7 @@
             <div class="card-footer">
               <span style="font-size:11px; color:#64748b;">場次: ${ev.sessions ? ev.sessions.length : 1} 場</span>
               <div class="card-footer-actions">
+                <button type="button" class="card-link-copy" onclick="event.stopPropagation(); copyShareLink('event', '${ev.event_id}', this)" title="複製這場活動的連結（可貼到 LINE 或做成 QR Code）"><i class="fa-solid fa-link"></i></button>
                 ${regLinkHtml}
                 <a href="${ev.url}" target="_blank" class="card-link" onclick="trackEvent('click_official_link', { title: '${escapedEvTitle}' }); event.stopPropagation()">
                   官方詳情 <i class="fa-solid fa-arrow-up-right-from-square"></i>
@@ -2643,6 +2673,28 @@
       }
     }
 
+    // 複製分享連結：?event=活動編號 或 ?loc=館舍名稱（打開後直接定位，也可做成 QR Code）
+    function copyShareLink(type, value, el) {
+      const url = `${location.origin}${location.pathname}?${type}=${encodeURIComponent(value)}`;
+      trackEvent('copy_share_link', { type: type, value: String(value) });
+      const done = () => {
+        if (!el) return;
+        const old = el.innerHTML;
+        el.classList.add('copied');
+        el.innerHTML = el.classList.contains('popup-copy-link') ? '<i class="fa-solid fa-check"></i> 已複製' : '<i class="fa-solid fa-check"></i>';
+        setTimeout(() => { el.classList.remove('copied'); el.innerHTML = old; }, 1600);
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(url).then(done, () => window.prompt('請複製這個連結：', url));
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); done(); } catch (e) { window.prompt('請複製這個連結：', url); }
+        document.body.removeChild(ta);
+      }
+    }
+
     function focusEventCard(eventId) {
       const card = document.getElementById(`card_${eventId}`);
       if (card) {
@@ -2842,6 +2894,13 @@
     const searchQ = urlParams.get('q') || urlParams.get('search');
     const applyQ = urlParams.get('apply');
     const quotaQ = urlParams.get('quota');
+    const eventQ = urlParams.get('event');            // ?event=447：直接定位到這場活動
+    const locQ = urlParams.get('loc');                // ?loc=物理研究所：只列出這棟館舍的活動並定位
+    const dayQ = urlParams.get('day');                // ?day=10/17：切到該活動日
+    if (locQ && !searchQ) {
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) searchInput.value = locQ;
+    }
     if (searchQ) {
       const searchInput = document.getElementById('searchInput');
       if (searchInput) {
@@ -2888,11 +2947,24 @@
     updateThemeChipCounts();
     applyFilters();
 
-    if (searchQ) {
+    const DAY_THEME = { '10/03': '兒童科普日', '10/3': '兒童科普日', '10/17': '院區開放日', '11/14': '南部院區開放日' };
+    if (dayQ && DAY_THEME[dayQ]) {
+      setThemeFilter(DAY_THEME[dayQ], document.querySelector(`.theme-card-chip[data-theme="${DAY_THEME[dayQ]}"]`));
+    }
+
+    if (searchQ || eventQ || locQ) {
       setTimeout(() => {
-        const firstCard = document.querySelector('.event-card');
-        if (firstCard) {
-          firstCard.click();
+        let target = eventQ ? document.getElementById(`card_${eventQ}`) : null;
+        if (!target && locQ) {
+          target = [...document.querySelectorAll('.event-card')].find(c => {
+            const ev = allEventsData.find(e => `card_${e.event_id}` === c.id);
+            return ev && ev.location === locQ;
+          }) || null;
+        }
+        if (!target) target = document.querySelector('.event-card');
+        if (target) {
+          target.click();
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       }, 500);
     }
