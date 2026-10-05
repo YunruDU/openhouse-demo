@@ -149,27 +149,27 @@
   <!-- 主內容區 -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
 
-    <!-- 活動日期切換 Tabs (彈性排版：防截斷、支援大螢幕平鋪與筆電/小螢幕換行，手機版支援滑動) -->
+    <!-- 活動日期切換 Tabs（手機版排成 2x2 格子，四個日期一次看到；平板以上維持一列） -->
     <div class="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm">
-      <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 sm:pb-0 no-scrollbar max-w-full flex-shrink-0 pr-2" id="dateTabContainer">
-        <button onclick="setDateFilter('ALL')" id="tab-ALL" class="date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 sm:gap-2 bg-brand-600 text-white shadow-md shadow-brand-500/20 whitespace-nowrap flex-shrink-0">
+      <div class="grid grid-cols-2 gap-1.5 w-full sm:w-auto sm:flex sm:items-center sm:gap-2 sm:overflow-x-auto no-scrollbar max-w-full sm:flex-shrink-0 sm:pr-2" id="dateTabContainer">
+        <button onclick="setDateFilter('ALL')" id="tab-ALL" class="date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 sm:gap-2 bg-brand-600 text-white shadow-md shadow-brand-500/20 justify-center sm:justify-start text-center leading-tight min-w-0 sm:whitespace-nowrap sm:flex-shrink-0">
           <i class="fa-solid fa-layer-group"></i>
           <span>全部 3 天活動</span>
           <span class="px-1.5 py-0.2 rounded-full text-xs bg-white/20" id="badgeCountAll">177</span>
         </button>
-        <button onclick="setDateFilter('2026-10-03')" id="tab-2026-10-03" class="date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 whitespace-nowrap flex-shrink-0">
+        <button onclick="setDateFilter('2026-10-03')" id="tab-2026-10-03" class="date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 justify-center sm:justify-start text-center leading-tight min-w-0 sm:whitespace-nowrap sm:flex-shrink-0">
           <i class="fa-solid fa-child text-amber-500"></i>
-          <span>10/03 (六) 兒童科普日</span>
+          <span class="flex flex-col sm:flex-row sm:gap-1"><span>10/03<span class="hidden sm:inline"> (六)</span></span><span>兒童科普日</span></span>
           <span class="px-1.5 py-0.2 rounded-full text-xs bg-slate-200 text-slate-700" id="badgeCount1003">0</span>
         </button>
-        <button onclick="setDateFilter('2026-10-17')" id="tab-2026-10-17" class="date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 whitespace-nowrap flex-shrink-0">
+        <button onclick="setDateFilter('2026-10-17')" id="tab-2026-10-17" class="date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 justify-center sm:justify-start text-center leading-tight min-w-0 sm:whitespace-nowrap sm:flex-shrink-0">
           <i class="fa-solid fa-building-columns text-blue-500"></i>
-          <span>10/17 (六) 院區開放日</span>
+          <span class="flex flex-col sm:flex-row sm:gap-1"><span>10/17<span class="hidden sm:inline"> (六)</span></span><span>院區開放日</span></span>
           <span class="px-1.5 py-0.2 rounded-full text-xs bg-slate-200 text-slate-700" id="badgeCount1017">0</span>
         </button>
-        <button onclick="setDateFilter('2026-11-14')" id="tab-2026-11-14" class="date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 whitespace-nowrap flex-shrink-0">
+        <button onclick="setDateFilter('2026-11-14')" id="tab-2026-11-14" class="date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 justify-center sm:justify-start text-center leading-tight min-w-0 sm:whitespace-nowrap sm:flex-shrink-0">
           <i class="fa-solid fa-tree text-emerald-500"></i>
-          <span>11/14 (六) 南部院區開放</span>
+          <span class="flex flex-col sm:flex-row sm:gap-1"><span>11/14<span class="hidden sm:inline"> (六)</span></span><span>南部院區<span class="hidden sm:inline">開放</span></span></span>
           <span class="px-1.5 py-0.2 rounded-full text-xs bg-slate-200 text-slate-700" id="badgeCount1114">0</span>
         </button>
       </div>
@@ -696,12 +696,12 @@
 
     function highlightDateTab(date) {
       document.querySelectorAll('.date-tab').forEach(btn => {
-        btn.className = 'date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 whitespace-nowrap flex-shrink-0';
+        btn.className = 'date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 justify-center sm:justify-start text-center leading-tight min-w-0 sm:whitespace-nowrap sm:flex-shrink-0';
       });
 
       const activeBtn = document.getElementById('tab-' + date);
       if (activeBtn) {
-        activeBtn.className = 'date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 sm:gap-2 bg-brand-600 text-white shadow-md shadow-brand-500/20 whitespace-nowrap flex-shrink-0';
+        activeBtn.className = 'date-tab px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 sm:gap-2 bg-brand-600 text-white shadow-md shadow-brand-500/20 justify-center sm:justify-start text-center leading-tight min-w-0 sm:whitespace-nowrap sm:flex-shrink-0';
       }
     }
 
