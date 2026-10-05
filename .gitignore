@@ -15,6 +15,8 @@ MAP/openhouse_knowledge_base.md
 MAP/*.xlsx
 MAP/README.md
 MAP/build_map.py
+MAP/route_nav.js
+MAP/route_graph.json
 MAP/registration_data.json
 
 # 報名分析：資料已內嵌在 報名分析/index.html
