@@ -19,6 +19,12 @@ MAP/route_nav.js
 MAP/route_graph.json
 MAP/registration_data.json
 
+# 本機用的比對腳本：內含官網後台匯出的承辦人姓名與電話，不可公開
+MAP/compare_pasted.py
+# Python 編譯快取（build_map.py 不公開，它的 .pyc 也不該公開）
+__pycache__/
+*.pyc
+
 # 報名分析：資料已內嵌在 報名分析/index.html
 報名分析/data.json
 
